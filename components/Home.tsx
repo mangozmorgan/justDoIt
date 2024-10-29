@@ -2,7 +2,7 @@ import {  useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Logo from './shared/Logo';
+import Logo from './shared/LogoHome';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import Cloud1 from '../assets/svg/cloud1';

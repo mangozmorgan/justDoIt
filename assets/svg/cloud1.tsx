@@ -1,5 +1,5 @@
 import React from 'react';
-import Svg, { Circle, Path, G } from 'react-native-svg';
+import Svg, {  Path, G } from 'react-native-svg';
 
 const Cloud1: React.FC = () => (
 

@@ -4,13 +4,14 @@ import * as SplashScreen from 'expo-splash-screen';
 import React from 'react'; 
 import { useAuth } from '../contexts/AuthContext';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, get } from 'react-hook-form';
 import { FormValues } from '../interfaces/FormValueInterface';
 import { useNavigation } from '@react-navigation/native'; 
 import { Ionicons } from '@expo/vector-icons';
 import TemplateWrapper from './shared/TemplateWrapper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import Toast from 'react-native-toast-message';
 
 // Prévenir l'auto-masquage de l'écran de démarrage
 SplashScreen.preventAutoHideAsync();
@@ -22,20 +23,36 @@ export default function Login() {
   const navigation = useNavigation<NavigationProp>();
 
   const MyForm = () => {
+
     const { login } = useAuth(); 
-    const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
-      defaultValues: {
-        email: '', 
-        password: '', 
-      },
-    });
+    const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>(
+      {
+        defaultValues: {
+          email: '', 
+          password: '', 
+        },
+      }
+    );
 
     const onSubmit = async (data: FormValues) => {
       try {
+
         await login(data.email, data.password);
+        
         navigation.navigate('Dashboard'); 
+
       } catch (error) {
-        console.error('Erreur lors de la connexion:', error);
+
+        Toast.show({
+          text1: '⛔ Connexion',
+          text2: 'Identifiants invalides',
+          type: 'error',
+          position: 'top',
+          visibilityTime: 3000,
+          topOffset: 50,
+          autoHide: true,
+      });
+        console.error('Identifiant inconnus', error);
       }
     };
 

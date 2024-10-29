@@ -1,9 +1,10 @@
 import React, { ReactNode } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
-import Logo from './Logo';
+import Logo from './LogoHome';
 import DisconnectButton from './DisconnectButton';
 import { AuthProvider, useAuth } from '../../contexts/AuthContext';
+import LogoTitle from './LogoTitle';
 
 
 interface GradientWrapperProps {
@@ -12,9 +13,13 @@ interface GradientWrapperProps {
 
   const TemplateWrapper: React.FC<GradientWrapperProps> = ({ children }) => {
 
-    const CheckUser = () => {
-        const { user } = useAuth();    
-        return user ? <DisconnectButton /> : null;
+    const IsConnected = () =>{
+      const { user } = useAuth();  
+      return user ? true : false;
+    }
+
+    const DisplayDisconnectButton = () => {
+        return IsConnected() ? <DisconnectButton /> : null;
     }
 
     return (
@@ -22,12 +27,14 @@ interface GradientWrapperProps {
             <LinearGradient colors={['#8EC5FC', '#E0C3FC']} style={styles.gradient}>
 
                 <View style={styles.container}>
-                    <Logo></Logo>
-                    <CheckUser></CheckUser> 
+                  { IsConnected() ? <LogoTitle ></LogoTitle> : <Logo></Logo> }
+
+                    
+                    <DisplayDisconnectButton></DisplayDisconnectButton> 
                     {children}
                 </View> 
 
-                </LinearGradient>
+            </LinearGradient>
       
     );
   };

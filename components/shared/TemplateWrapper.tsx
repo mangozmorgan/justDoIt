@@ -3,8 +3,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
 import Logo from './LogoHome';
 import DisconnectButton from './DisconnectButton';
-import { AuthProvider, useAuth } from '../../contexts/AuthContext';
-import LogoTitle from './LogoTitle';
+import { useAuth } from '../../contexts/AuthContext';
+import LogoAndTitle from './LogoAndTitle';
 
 
 interface GradientWrapperProps {
@@ -27,7 +27,7 @@ interface GradientWrapperProps {
             <LinearGradient colors={['#8EC5FC', '#E0C3FC']} style={styles.gradient}>
 
                 <View style={styles.container}>
-                  { IsConnected() ? <LogoTitle ></LogoTitle> : <Logo></Logo> }
+                  { IsConnected() ? <LogoAndTitle ></LogoAndTitle> : <Logo></Logo> }
 
                     
                     <DisplayDisconnectButton></DisplayDisconnectButton> 

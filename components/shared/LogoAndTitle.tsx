@@ -12,7 +12,7 @@ const fetchFonts = () => {
     });
 };
 
-export default function LogoTitle(){
+export default function LogoAndTitle(){
     const [fontLoaded, setFontLoaded] = useState(false);
 
     useEffect(() => {

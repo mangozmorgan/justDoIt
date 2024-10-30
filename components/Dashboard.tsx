@@ -8,6 +8,7 @@ import NavBar from './NavBar';
 interface Task {
   name: string;
   status: string;
+  date: string;
 }
 
 
@@ -88,11 +89,12 @@ const Dashboard: React.FC = () => {
             <Text style={styles.today}>Aujourdhui</Text>
             {Object.keys(data).map((key) => (
               <TouchableOpacity key={key} style={styles.task}>
-                <Text style={styles.taskName}>Name: {data[key].name}</Text>
-                <Text style={styles.taskStatus}>Status: {data[key].status}</Text>
+                <Text style={styles.taskName}>{data[key].name}</Text>
+                <Text style={styles.taskStatus}>{data[key].date}</Text>
               </TouchableOpacity>
             ))}
           </View>
+          
         ) : (
           <Text>No data available</Text>
         )}
@@ -116,11 +118,15 @@ const styles = StyleSheet.create({
     bottom: 50,
     alignItems: 'center',
   },
-  task: {    
+  task: {   
+    display: 'flex',
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
     width: '90%',
     paddingVertical: 10, 
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     backgroundColor: '#A9C6FF',
     borderRadius: 10
   },

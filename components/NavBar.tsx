@@ -7,19 +7,19 @@ export default function NavBar(){
             <View style={styles.nav}>
                 <TouchableOpacity style={[styles.card, styles.shoppingListColor]}>
                     <Ionicons name="basket-outline" size={24} color="white" />
-                    <Text style={styles.textWhite}>Liste de courses</Text>
+                    {/* <Text style={styles.textWhite}>Liste de courses</Text> */}
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.card, styles.addTaskColor]}>    
                     <Ionicons name="add" size={24} color="white" />
-                    <Text style={styles.textWhite}>Ajout de tâche</Text>
+                    {/* <Text style={styles.textWhite}>Ajout de tâche</Text> */}
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.card, styles.taskListColor]}>
                     <Ionicons name="list" size={24} color="white" />
-                    <Text style={styles.textWhite}>Voir les tâches</Text>
+                    {/* <Text style={styles.textWhite}>Voir les tâches</Text> */}
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.card, styles.ParamsColor]}>
                     <Ionicons name="cog-outline" size={24} color="white" />
-                    <Text style={styles.textWhite}>Votre compte</Text>
+                    {/* <Text style={styles.textWhite}>Votre compte</Text> */}
                 </TouchableOpacity>    
             </View>
         </View>
@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: 10,
+        padding: 20,
         textAlign: 'center',        
-        maxWidth: '22%',
+        maxWidth: '25%',
         fontSize: 12, 
         borderRadius: 10
     },

@@ -22,7 +22,7 @@ const AppNavigator = () => {
   if (loading) {
     return null; 
   }
-console.log(user);
+  
   const initialRoute = user ? 'Dashboard' : 'Home'; 
 
   return (

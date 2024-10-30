@@ -1,11 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { RootStackParamList } from '../navigation/AppNavigator';
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'ShoppingList'>;
 
 export default function NavBar(){
+
+    const navigation = useNavigation<NavigationProp>();
+
     return (
         <View style={styles.navContainer}>
             <View style={styles.nav}>
-                <TouchableOpacity style={[styles.card, styles.shoppingListColor]}>
+                <TouchableOpacity style={[styles.card, styles.shoppingListColor]} onPress={() => navigation.navigate('ShoppingList')}>
                     <Ionicons name="basket-outline" size={24} color="white" />
                     {/* <Text style={styles.textWhite}>Liste de courses</Text> */}
                 </TouchableOpacity>
@@ -38,7 +46,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }, 
     nav: {
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: 'rgba(255, 255, 255, 0.4)',
         width: '90%',
         display: 'flex',
         flexDirection: 'row',

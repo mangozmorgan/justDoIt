@@ -7,11 +7,13 @@ import Toast from 'react-native-toast-message';
 import Dashboard from '../components/Dashboard';
 import ProtectedRoute from './ProtectedRoute';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
+import ShoppingList from '../components/ShoppingList';
 
 export type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Dashboard: undefined;
+  ShoppingList: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -33,6 +35,13 @@ const AppNavigator = () => {
         {() => (
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="ShoppingList">
+        {() => (
+          <ProtectedRoute>
+            <ShoppingList />
           </ProtectedRoute>
         )}
       </Stack.Screen>

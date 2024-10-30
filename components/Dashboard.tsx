@@ -80,32 +80,62 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  const timestamp = Date.now();
+  const date = new Date(timestamp);  
+  const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
   return (
-    <TemplateWrapper>
-      <Text style={styles.subtitle}>Hello {user?.name}</Text>
-        <NavBar></NavBar>
-        {data ? (
-          <View style={styles.tasksContainer}>
-            <Text style={styles.today}>Aujourdhui</Text>
-            {Object.keys(data).map((key) => (
-              <TouchableOpacity key={key} style={styles.task}>
-                <Text style={styles.taskName}>{data[key].name}</Text>
-                <Text style={styles.taskStatus}>{data[key].date}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          
-        ) : (
-          <Text>No data available</Text>
-        )}
+  <TemplateWrapper>
+    <Text style={styles.subtitle}>Hello {user?.name}</Text>
+    <NavBar />
+    {data ? (
+      <View style={styles.container}>
+        <View style={styles.tasksContainer}>
+          <Text style={styles.today}>Aujourd'hui</Text>
+          {Object.keys(data).map((key) => {
+            if (data[key].date === today) {
+              return (
+                <TouchableOpacity key={key} style={styles.task}>
+                  <Text style={styles.taskName}>{data[key].name}</Text>
+                  <Text style={styles.taskStatus}>{data[key].date}</Text>
+                </TouchableOpacity>
+              );
+            }
+            return null; 
+          })}
+        </View>
+        <View style={styles.tasksContainer}>
+          <Text style={styles.today}>Tâches à venir</Text>
+          {Object.keys(data).map((key) => {
+            if (data[key].date !== today) {
+              return (
+                <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
+                  <Text style={styles.taskName}>{data[key].name}</Text>
+                  <Text style={styles.taskStatus}>{data[key].date}</Text>
+                </TouchableOpacity>
+              );
+            }
+            return null; 
+          })}
+        </View>
+      </View>
       
-      
-    </TemplateWrapper>
-  );
+    ) : (
+      <Text>No data available</Text>
+    )}
+  </TemplateWrapper>
+);
+
 };
 
 
 const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width:'100%'
+  },
   subtitle: {
     fontSize: 24,
     color: '#fff',
@@ -130,6 +160,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#A9C6FF',
     borderRadius: 10
   },
+  futurTaskColor: {
+    backgroundColor: "#D0ABFD"
+  },
   taskName: {
     fontSize: 18,
     color: '#fff',
@@ -147,7 +180,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     width: '90%',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   taskStatus: {
     fontSize: 16,

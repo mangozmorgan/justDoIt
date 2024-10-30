@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import AppNavigator from './navigation/AppNavigator';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
   return (

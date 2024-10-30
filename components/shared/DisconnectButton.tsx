@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet,  TouchableOpacity } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import Toast from 'react-native-toast-message';
 import { Ionicons } from '@expo/vector-icons';

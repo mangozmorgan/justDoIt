@@ -8,7 +8,7 @@ import NavBar from './NavBar';
 interface Task {
   name: string;
   status: string;
-  date: string;
+  executionDate: string;
 }
 
 
@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <TemplateWrapper>
+      <TemplateWrapper withLogo={true}>
         <ActivityIndicator size="large" color="#0000ff" />
       </TemplateWrapper>
     );
@@ -85,7 +85,7 @@ const Dashboard: React.FC = () => {
   const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
   return (
-  <TemplateWrapper>
+  <TemplateWrapper  withLogo={true}>
     <Text style={styles.subtitle}>Hello {user?.name}</Text>
     <NavBar />
     {data ? (
@@ -93,11 +93,11 @@ const Dashboard: React.FC = () => {
         <View style={styles.tasksContainer}>
           <Text style={styles.today}>Aujourd'hui</Text>
           {Object.keys(data).map((key) => {
-            if (data[key].date === today) {
+            if (data[key].executionDate === today) {
               return (
                 <TouchableOpacity key={key} style={styles.task}>
                   <Text style={styles.taskName}>{data[key].name}</Text>
-                  <Text style={styles.taskStatus}>{data[key].date}</Text>
+                  <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
                 </TouchableOpacity>
               );
             }
@@ -107,11 +107,11 @@ const Dashboard: React.FC = () => {
         <View style={styles.tasksContainer}>
           <Text style={styles.today}>Tâches à venir</Text>
           {Object.keys(data).map((key) => {
-            if (data[key].date !== today) {
+            if (data[key].executionDate !== today) {
               return (
                 <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
                   <Text style={styles.taskName}>{data[key].name}</Text>
-                  <Text style={styles.taskStatus}>{data[key].date}</Text>
+                  <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
                 </TouchableOpacity>
               );
             }

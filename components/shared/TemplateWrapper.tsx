@@ -9,9 +9,10 @@ import LogoAndTitle from './LogoAndTitle';
 
 interface GradientWrapperProps {
     children: ReactNode; 
+    withLogo: boolean
   }
 
-  const TemplateWrapper: React.FC<GradientWrapperProps> = ({ children }) => {
+  const TemplateWrapper: React.FC<GradientWrapperProps> = ({ children, withLogo = true }) => {
 
     const IsConnected = () =>{
       const { user } = useAuth();  
@@ -27,7 +28,8 @@ interface GradientWrapperProps {
             <LinearGradient colors={['#8EC5FC', '#E0C3FC']} style={styles.gradient}>
 
                 <View style={styles.container}>
-                  { IsConnected() ? <LogoAndTitle ></LogoAndTitle> : <Logo></Logo> }
+                  {withLogo ? IsConnected()  ? <LogoAndTitle ></LogoAndTitle> : <Logo></Logo> : null}
+                  {/* { IsConnected()  ? <LogoAndTitle ></LogoAndTitle> : <Logo></Logo> } */}
 
                     
                     <DisplayDisconnectButton></DisplayDisconnectButton> 

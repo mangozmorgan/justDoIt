@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     
-    <TemplateWrapper>
+    <TemplateWrapper  withLogo={true}>
       
         <Text style={styles.subtitle}>Accueil</Text>
 

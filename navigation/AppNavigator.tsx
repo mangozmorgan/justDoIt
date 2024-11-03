@@ -8,12 +8,14 @@ import Dashboard from '../components/Dashboard';
 import ProtectedRoute from './ProtectedRoute';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import ShoppingList from '../components/ShoppingList';
+import AddTask from '../components/AddTask';
 
 export type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Dashboard: undefined;
   ShoppingList: undefined;
+  AddTask: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -42,6 +44,13 @@ const AppNavigator = () => {
         {() => (
           <ProtectedRoute>
             <ShoppingList />
+          </ProtectedRoute>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="AddTask">
+        {() => (
+          <ProtectedRoute>
+            <AddTask />
           </ProtectedRoute>
         )}
       </Stack.Screen>

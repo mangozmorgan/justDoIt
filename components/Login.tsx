@@ -1,11 +1,11 @@
-import { LinearGradient } from 'expo-linear-gradient';
+
 import Cloud2 from '../assets/svg/cloud2';
 import * as SplashScreen from 'expo-splash-screen';
 import React from 'react'; 
 import { useAuth } from '../contexts/AuthContext';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { useForm, Controller, get } from 'react-hook-form';
-import { FormValues } from '../interfaces/FormValueInterface';
+import { FormValues } from '../interfaces/FormLoginInterface';
 import { useNavigation } from '@react-navigation/native'; 
 import { Ionicons } from '@expo/vector-icons';
 import TemplateWrapper from './shared/TemplateWrapper';
@@ -119,7 +119,7 @@ export default function Login() {
   };
 
   return (
-      <TemplateWrapper>
+      <TemplateWrapper withLogo={true}>
         <MyForm />
           <Cloud2 />   
       </TemplateWrapper>

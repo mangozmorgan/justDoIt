@@ -17,7 +17,7 @@ export default function NavBar(){
                     <Ionicons name="basket-outline" size={24} color="white" />
                     {/* <Text style={styles.textWhite}>Liste de courses</Text> */}
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.card, styles.addTaskColor]}>    
+                <TouchableOpacity style={[styles.card, styles.addTaskColor]} onPress={() => navigation.navigate('AddTask')}>    
                     <Ionicons name="add" size={24} color="white" />
                     {/* <Text style={styles.textWhite}>Ajout de tâche</Text> */}
                 </TouchableOpacity>

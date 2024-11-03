@@ -7,7 +7,7 @@ import TemplateWrapper from "./shared/TemplateWrapper";
 export default function ShoppingList(){
 
     return (
-        <TemplateWrapper>
+        <TemplateWrapper  withLogo={true}>
             <Text>Shopping List</Text>
         </TemplateWrapper>
     )

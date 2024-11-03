@@ -213,7 +213,7 @@ export default function NewTaskForm() {
                 topOffset: 50,
                 autoHide: true,
               });
-              navigation.goBack(); 
+              navigation.navigate('Dashboard'); 
             })
             .catch((error) => {
               console.error("Erreur lors de l'ajout de la tâche :", error);

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { auth, database } from '../config/firebaseConfig'; 
 import { ref, get } from 'firebase/database';
 import TemplateWrapper from './shared/TemplateWrapper';
 import NavBar from './NavBar';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Task {
   name: string;
@@ -22,6 +23,25 @@ const Dashboard: React.FC = () => {
   const [data, setData] = useState<Record<string, Task> | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const getTasks = async (userId: string) => {
+        
+    try {
+      const snapshot = await get(ref(database, `tasks/${userId}`));
+      
+      if (snapshot.exists()) {
+        console.log(snapshot.val());
+        setData(snapshot.val());
+      } else {
+        console.log('Aucune donnée disponible');
+        setData(null);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   
 
   useEffect(() => {
@@ -30,23 +50,9 @@ const Dashboard: React.FC = () => {
 
     if (user) {
 
-      const getTasks = async () => {
-        
-        try {
-          const snapshot = await get(ref(database, `tasks/${user.uid}`));
-          
-          if (snapshot.exists()) {
-            setData(snapshot.val());
-          } else {
-            console.log('Aucune donnée disponible');
-            setData(null);
-          }
-        } catch (error) {
-          console.error('Erreur lors de la récupération des données:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
+      getTasks(user.uid)
+      
+      
 
       const getUser = async () => {
         try {
@@ -65,13 +71,22 @@ const Dashboard: React.FC = () => {
         }
       }
 
-      getTasks();
       getUser();
     } else {
       setLoading(false); 
     }
+
+    
   }, []);
 
+  
+ // Utilise useFocusEffect pour appeler getTasks chaque fois que le composant est affiché
+ useFocusEffect(
+  useCallback(() => {
+    const user = auth.currentUser;
+    getTasks(user ? user.uid : '' );
+  }, [])
+);
   if (loading) {
     return (
       <TemplateWrapper withLogo={true}>

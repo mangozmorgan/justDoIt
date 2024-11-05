@@ -43,12 +43,14 @@ const styles = StyleSheet.create({
         width: '100%',
         display: 'flex',
         marginBottom: 10,
+        paddingHorizontal: 20,
         flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     }, 
     nav: {
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
-        width: '90%',
+        width: '100%',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',

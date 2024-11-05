@@ -102,8 +102,11 @@ const Dashboard: React.FC = () => {
 
   return (
   <TemplateWrapper  withLogo={true}>
-    <Text style={styles.subtitle}>Hello {user?.name}</Text>
-    <NavBar />
+    <View style={styles.topContainer}>
+      <Text style={styles.subtitle}>Hello {user?.name}</Text>
+      <NavBar />
+    </View>
+    
     {data ? (
       <View style={styles.container}>
         <View style={styles.tasksContainer}>
@@ -153,19 +156,22 @@ const Dashboard: React.FC = () => {
 
 const styles = StyleSheet.create({
   topContainer: {
-    height: '30%'
+    display: 'flex',
+    alignItems: 'center',
+    height: '20%'
   },
   container: {
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
     width:'100%',
-    height: '70%'
+    height: '50%'
   },
   subtitle: {
     fontSize: 24,
+    textAlign: 'center',
     color: '#fff',
-    marginBottom: 40,
+    marginBottom: 20,
   },
   cloudContainer: {
     color: '#fff',
@@ -205,11 +211,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,    
     width: '90%',
+    height:'50%',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   thereTasks: {
     // maxHeight: '30%',
     height:'25%',
+    backgroundColor:'red',
     overflow: 'scroll',
   },
   taskStatus: {

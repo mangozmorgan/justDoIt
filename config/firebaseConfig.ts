@@ -3,16 +3,17 @@ import { getReactNativePersistence, initializeAuth, getAuth, Auth } from "fireba
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET,MESSENGER_SENDER_ID, APP_ID, MEASURE_ID, DB_URL  } from '@env';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBKwReIsdPPqY0sGAXFGNxKApNcMI7aMrY",
-  authDomain: "justdoit-a10fc.firebaseapp.com",
-  projectId: "justdoit-a10fc",
-  storageBucket: "justdoit-a10fc.appspot.com",
-  messagingSenderId: "1094068284982",
-  appId: "1:1094068284982:web:3550290a8d4411aa947297",
-  measurementId: "G-CZ9DG25Z6J",
-  databaseURL: "https://justdoit-a10fc-default-rtdb.europe-west1.firebasedatabase.app",
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSENGER_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASURE_ID,
+  databaseURL: DB_URL,
 };
 
 // Initialisez Firebase App

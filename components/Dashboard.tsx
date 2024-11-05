@@ -102,48 +102,78 @@ const Dashboard: React.FC = () => {
 
   return (
   <TemplateWrapper  withLogo={true}>
+    
     <View style={styles.topContainer}>
       <Text style={styles.subtitle}>Hello {user?.name}</Text>
       <NavBar />
     </View>
     
     {data ? (
-      <View style={styles.container}>
-        <View style={styles.tasksContainer}>
-          <Text style={styles.today}>Aujourd'hui</Text>
-          <ScrollView style={styles.thereTasks}>
-            {Object.keys(data).map((key) => {
-              if (data[key].executionDate !== today) {
-                return (
-                  <TouchableOpacity key={key} style={styles.task}>
-                    <Text style={styles.taskName}>{data[key].name}</Text>
-                    <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
-                  </TouchableOpacity>
-                );
-              }
-              return null; 
-            })}
-          </ScrollView>
-          
+      <ScrollView style={styles.scrollView}>
+          <View style={styles.container}>
+          <View style={styles.tasksContainer}>
+            <Text style={styles.today}>Aujourd'hui</Text>
+            <ScrollView style={styles.scrollPart}>
+              <View style={styles.thereTasks}>
+                {Object.keys(data).map((key) => {
+                  if (data[key].executionDate !== today) {
+                    return (
+                      <TouchableOpacity key={key} style={styles.task}>
+                        <Text  numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
+                        <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                      </TouchableOpacity>
+                    );
+                  }
+                  return null; 
+                })}
+              </View>
+              
+            </ScrollView>
+            
+          </View>
+          <View style={styles.tasksContainer}>
+            <Text style={styles.today}>Tâches en retard</Text>
+            <ScrollView style={styles.scrollPart}>
+              <View style={styles.thereTasks}>
+                {Object.keys(data).map((key) => {
+                  if (data[key].executionDate !== today) {
+                    return (
+                      <TouchableOpacity key={key} style={[styles.task, styles.lateTaskColor]}>
+                        <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
+                        <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                      </TouchableOpacity>
+                    );
+                  }
+                  return null; 
+                })}
+              </View>
+              
+            </ScrollView>
+            
+          </View>
+          <View style={styles.tasksContainer}>
+            <Text style={styles.today}>Tâches à venir</Text>
+            <ScrollView style={styles.scrollPart}>
+              <View style={styles.thereTasks}>
+                {Object.keys(data).map((key) => {
+                  if (data[key].executionDate !== today) {
+                    return (
+                      <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
+                        <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
+                        <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                      </TouchableOpacity>
+                    );
+                  }
+                  return null; 
+                })}
+              </View>
+              
+            </ScrollView>
+            
+          </View>
         </View>
-        <View style={styles.tasksContainer}>
-          <Text style={styles.today}>Tâches à venir</Text>
-          <ScrollView style={styles.thereTasks}>
-            {Object.keys(data).map((key) => {
-              if (data[key].executionDate !== today) {
-                return (
-                  <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
-                    <Text style={styles.taskName}>{data[key].name}</Text>
-                    <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
-                  </TouchableOpacity>
-                );
-              }
-              return null; 
-            })}
-          </ScrollView>
-          
-        </View>
-      </View>
+      </ScrollView>
+      
       
     ) : (
       <Text>No data available</Text>
@@ -166,6 +196,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width:'100%',
     height: '50%'
+  },
+  scrollView:{
+    width: "100%"
   },
   subtitle: {
     fontSize: 24,
@@ -195,8 +228,12 @@ const styles = StyleSheet.create({
   futurTaskColor: {
     backgroundColor: "#D0ABFD"
   },
+  lateTaskColor: {
+    backgroundColor: "#F7D794"
+  },
   taskName: {
     fontSize: 18,
+    width: '65%',
     color: '#fff',
   },
   today: {
@@ -211,14 +248,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,    
     width: '90%',
-    height:'50%',
+    // height:'40%',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
-  thereTasks: {
+  scrollPart: {
     // maxHeight: '30%',
-    height:'25%',
-    backgroundColor:'red',
+    // height:'25%',
     overflow: 'scroll',
+  },
+  thereTasks:{
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   taskStatus: {
     fontSize: 16,

@@ -28,6 +28,8 @@ let auth: Auth;
 
   auth = getAuth(appFirebase);
 
+
+
 const firestore = getFirestore(appFirebase);
 const database = getDatabase(appFirebase);
 

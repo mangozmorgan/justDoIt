@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     navContainer: {
         width: '100%',
         display: 'flex',
+        marginBottom: 10,
         flexDirection: 'row',
         justifyContent: 'center'
     }, 

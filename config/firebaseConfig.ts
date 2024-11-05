@@ -19,18 +19,14 @@ const firebaseConfig = {
 // Initialisez Firebase App
 const appFirebase = initializeApp(firebaseConfig);
 
-// Vérifiez si `initializeAuth` est nécessaire en vérifiant le type d'environnement
-let auth: Auth;
-// if (typeof global !== "undefined" && global?.window === undefined) {
-  // Environnement sans fenêtre (React Native), utilisez initializeAuth
-  auth = initializeAuth(appFirebase, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
 
-// } else {
-//   // Environnement avec fenêtre (Web), utilisez getAuth
-//   auth = getAuth(appFirebase);
-// }
+let auth: Auth;
+
+  // auth = initializeAuth(appFirebase, {
+  //   persistence: getReactNativePersistence(AsyncStorage),
+  // });
+
+  auth = getAuth(appFirebase);
 
 const firestore = getFirestore(appFirebase);
 const database = getDatabase(appFirebase);

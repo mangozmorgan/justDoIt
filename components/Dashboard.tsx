@@ -5,6 +5,7 @@ import { ref, get } from 'firebase/database';
 import TemplateWrapper from './shared/TemplateWrapper';
 import NavBar from './NavBar';
 import { useFocusEffect } from '@react-navigation/native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface Task {
   name: string;
@@ -107,31 +108,37 @@ const Dashboard: React.FC = () => {
       <View style={styles.container}>
         <View style={styles.tasksContainer}>
           <Text style={styles.today}>Aujourd'hui</Text>
-          {Object.keys(data).map((key) => {
-            if (data[key].executionDate === today) {
-              return (
-                <TouchableOpacity key={key} style={styles.task}>
-                  <Text style={styles.taskName}>{data[key].name}</Text>
-                  <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
-                </TouchableOpacity>
-              );
-            }
-            return null; 
-          })}
+          <ScrollView style={styles.thereTasks}>
+            {Object.keys(data).map((key) => {
+              if (data[key].executionDate !== today) {
+                return (
+                  <TouchableOpacity key={key} style={styles.task}>
+                    <Text style={styles.taskName}>{data[key].name}</Text>
+                    <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                  </TouchableOpacity>
+                );
+              }
+              return null; 
+            })}
+          </ScrollView>
+          
         </View>
         <View style={styles.tasksContainer}>
           <Text style={styles.today}>Tâches à venir</Text>
-          {Object.keys(data).map((key) => {
-            if (data[key].executionDate !== today) {
-              return (
-                <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
-                  <Text style={styles.taskName}>{data[key].name}</Text>
-                  <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
-                </TouchableOpacity>
-              );
-            }
-            return null; 
-          })}
+          <ScrollView style={styles.thereTasks}>
+            {Object.keys(data).map((key) => {
+              if (data[key].executionDate !== today) {
+                return (
+                  <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
+                    <Text style={styles.taskName}>{data[key].name}</Text>
+                    <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                  </TouchableOpacity>
+                );
+              }
+              return null; 
+            })}
+          </ScrollView>
+          
         </View>
       </View>
       
@@ -145,11 +152,15 @@ const Dashboard: React.FC = () => {
 
 
 const styles = StyleSheet.create({
+  topContainer: {
+    height: '30%'
+  },
   container: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    width:'100%'
+    width:'100%',
+    height: '70%'
   },
   subtitle: {
     fontSize: 24,
@@ -192,10 +203,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     paddingVertical: 10,
     alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: 10,    
     width: '90%',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  thereTasks: {
+    // maxHeight: '30%',
+    height:'25%',
+    overflow: 'scroll',
   },
   taskStatus: {
     fontSize: 16,

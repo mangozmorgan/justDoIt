@@ -6,7 +6,7 @@ import TemplateWrapper from "./shared/TemplateWrapper";
 
 export default function AddTask(){
     return(
-        <TemplateWrapper withLogo={false}>
+        <TemplateWrapper withLogo={true}>
             <NewTaskForm></NewTaskForm>
         </TemplateWrapper>
     )

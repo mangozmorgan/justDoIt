@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
 import { auth, database } from '../config/firebaseConfig'; 
 import { ref, get } from 'firebase/database';
 import TemplateWrapper from './shared/TemplateWrapper';
@@ -109,66 +109,71 @@ const Dashboard: React.FC = () => {
     </View>
     
     {data ? (
-      <ScrollView style={styles.scrollView}>
+      <ScrollView
+       horizontal
+       showsHorizontalScrollIndicator={false} 
+       snapToAlignment="center"
+      snapToInterval={355} 
+      decelerationRate="fast"  >
           <View style={styles.container}>
-          <View style={styles.tasksContainer}>
-            <Text style={styles.today}>Aujourd'hui</Text>
-            <ScrollView style={styles.scrollPart}>
-              <View style={styles.thereTasks}>
-                {Object.keys(data).map((key) => {
-                  if (data[key].executionDate !== today) {
-                    return (
-                      <TouchableOpacity key={key} style={styles.task}>
-                        <Text  numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
-                        <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
-                      </TouchableOpacity>
-                    );
-                  }
-                  return null; 
-                })}
-              </View>
+            <View style={styles.tasksContainer}>
+              <Text style={styles.today}>Aujourd'hui</Text>
+              <ScrollView style={styles.scrollPart}>
+                <View style={styles.thereTasks}>
+                  {Object.keys(data).map((key) => {
+                    if (data[key].executionDate !== today) {
+                      return (
+                        <TouchableOpacity key={key} style={styles.task}>
+                          <Text  numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
+                          <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                        </TouchableOpacity>
+                      );
+                    }
+                    return null; 
+                  })}
+                </View>
+                
+              </ScrollView>
               
-            </ScrollView>
-            
-          </View>
-          <View style={styles.tasksContainer}>
-            <Text style={styles.today}>Tâches en retard</Text>
-            <ScrollView style={styles.scrollPart}>
-              <View style={styles.thereTasks}>
-                {Object.keys(data).map((key) => {
-                  if (data[key].executionDate !== today) {
-                    return (
-                      <TouchableOpacity key={key} style={[styles.task, styles.lateTaskColor]}>
-                        <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
-                        <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
-                      </TouchableOpacity>
-                    );
-                  }
-                  return null; 
-                })}
-              </View>
+            </View>
+            <View style={styles.tasksContainer}>
+              <Text style={styles.today}>Tâches en retard</Text>
+              <ScrollView style={styles.scrollPart}>
+                <View style={styles.thereTasks}>
+                  {Object.keys(data).map((key) => {
+                    if (data[key].executionDate !== today) {
+                      return (
+                        <TouchableOpacity key={key} style={[styles.task, styles.lateTaskColor]}>
+                          <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
+                          <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                        </TouchableOpacity>
+                      );
+                    }
+                    return null; 
+                  })}
+                </View>
+                
+              </ScrollView>
               
-            </ScrollView>
-            
-          </View>
-          <View style={styles.tasksContainer}>
-            <Text style={styles.today}>Tâches à venir</Text>
-            <ScrollView style={styles.scrollPart}>
-              <View style={styles.thereTasks}>
-                {Object.keys(data).map((key) => {
-                  if (data[key].executionDate !== today) {
-                    return (
-                      <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
-                        <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
-                        <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
-                      </TouchableOpacity>
-                    );
-                  }
-                  return null; 
-                })}
-              </View>
-              
-            </ScrollView>
+            </View>
+            <View style={styles.tasksContainer}>
+              <Text style={styles.today}>Tâches à venir</Text>
+              <ScrollView style={styles.scrollPart}>
+                <View style={styles.thereTasks}>
+                  {Object.keys(data).map((key) => {
+                    if (data[key].executionDate !== today) {
+                      return (
+                        <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
+                          <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
+                          <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                        </TouchableOpacity>
+                      );
+                    }
+                    return null; 
+                  })}
+                </View>
+                
+              </ScrollView>
             
           </View>
         </View>
@@ -192,13 +197,12 @@ const styles = StyleSheet.create({
   },
   container: {
     display: 'flex',
+    flexDirection: 'row',
+    overflow: 'scroll',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width:'100%',
-    height: '50%'
-  },
-  scrollView:{
-    width: "100%"
+    paddingRight: 130,
+    paddingLeft: 10,
   },
   subtitle: {
     fontSize: 24,
@@ -242,25 +246,26 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   tasksContainer: {
-    marginTop: 10,
+    marginRight: 10,
     display: 'flex',
     paddingVertical: 10,
+    paddingBottom: 30,
     alignItems: 'center',
     borderRadius: 10,    
-    width: '90%',
-    // height:'40%',
+    width: '37%',
+    height:'90%',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
   scrollPart: {
-    // maxHeight: '30%',
-    // height:'25%',
+    height:'15%',
     overflow: 'scroll',
   },
   thereTasks:{
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    height: '100%',
   },
   taskStatus: {
     fontSize: 16,

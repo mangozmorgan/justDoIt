@@ -39,9 +39,9 @@ export default function LogoAndTitle(){
             <View style={styles.svgContainer}>
                 <Cloud3></Cloud3>                
             </View>
-            <Text style={[styles.title, { fontFamily: 'IngridDarling-Regular' }]}>
+            {/* <Text style={[styles.title, { fontFamily: 'IngridDarling-Regular' }]}>
                     Just Do It !  
-            </Text>
+            </Text> */}
             
         </View>
         
@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     logoContainer: {
+        paddingTop: 80,
         display: 'flex', 
         alignItems: 'center',
         flexDirection: 'row'

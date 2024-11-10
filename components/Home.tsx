@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import Cloud1 from '../assets/svg/cloud1';
-import TemplateWrapper from './shared/TemplateWrapper';
+import TemplateWrapper from "./shared/TemplateWrapper/TemplateWrapperView";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 

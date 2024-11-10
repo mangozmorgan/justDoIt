@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import TemplateWrapper from "./shared/TemplateWrapper";
+import {  Text } from "react-native";
+import TemplateWrapper from "./shared/TemplateWrapper/TemplateWrapperView";
 
 
 

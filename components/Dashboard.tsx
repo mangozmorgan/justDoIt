@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
 import { auth, database } from '../config/firebaseConfig'; 
 import { ref, get } from 'firebase/database';
-import TemplateWrapper from './shared/TemplateWrapper';
+import TemplateWrapper from "./shared/TemplateWrapper/TemplateWrapperView";
 import NavBar from './NavBar';
 import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';

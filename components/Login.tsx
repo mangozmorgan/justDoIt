@@ -8,7 +8,7 @@ import { useForm, Controller, get } from 'react-hook-form';
 import { FormValues } from '../interfaces/FormLoginInterface';
 import { useNavigation } from '@react-navigation/native'; 
 import { Ionicons } from '@expo/vector-icons';
-import TemplateWrapper from './shared/TemplateWrapper';
+import TemplateWrapper from "./shared/TemplateWrapper/TemplateWrapperView";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import Toast from 'react-native-toast-message';

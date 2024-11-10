@@ -22,11 +22,11 @@ const appFirebase = initializeApp(firebaseConfig);
 
 let auth: Auth;
 
-  auth = initializeAuth(appFirebase, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
+  // auth = initializeAuth(appFirebase, {
+  //   persistence: getReactNativePersistence(AsyncStorage),
+  // });
 
-  // auth = getAuth(appFirebase);
+  auth = getAuth(appFirebase);
 
 
 

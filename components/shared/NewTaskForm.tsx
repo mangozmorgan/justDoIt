@@ -1,5 +1,5 @@
-import { Text, TextInput, View, StyleSheet, TouchableOpacity, Platform, Button, Touchable } from 'react-native';
-import { ref, update  } from 'firebase/database';
+import { Text, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { ref, update, get, push, set  } from 'firebase/database';
 import { TaskFormValues } from '../../interfaces/TaskFormValuesInterface';
 import { Controller, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
@@ -19,15 +19,19 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/AppNavigator';
 
-type User = {
+
+interface User {
   name: string;
-  type:string
-};
+  email: string;
+  type: string;
+  houseId: string;
+}
 
 export default function NewTaskForm() {
 
 
   const MyForm = () => {
+    
     const { control, formState: { errors, isSubmitting }, getValues, handleSubmit } = useForm<TaskFormValues>({
       defaultValues: {
         name: '',
@@ -40,7 +44,7 @@ export default function NewTaskForm() {
 
     const [selectedType, setSelectedType] = useState('');
     const [description, setDescription] = useState('');
-    const [selectedUser, handleUserSelect] = useState('');
+    const [selectedUser, handleUserSelect] = useState<string[]>([]);
     const [isExpandedType, setIsExpandedType] = useState(false);
     const [isExpandedUser, setIsExpandedUser] = useState(false);
     const [isExpandedSchedule, setIsExpandedSchedule] = useState(false);
@@ -55,6 +59,8 @@ export default function NewTaskForm() {
 
     type NavigationProp = StackNavigationProp<RootStackParamList, 'AddTask'>;
     const navigation = useNavigation<NavigationProp>();
+
+    
 
     const toggleFrequencyPicker = () => {
       setDateVisible(false)
@@ -108,6 +114,74 @@ export default function NewTaskForm() {
       setDateIsChanged(false)
     };
 
+    const getNextExecutionDateByFrequency = (frequency: string) => {
+      const today = new Date();
+      let nextExecutionDate = new Date(today);
+      
+      switch (frequency) {
+        case 'daily':
+          // Prochaine exécution demain
+          nextExecutionDate.setDate(today.getDate() + 1);
+          break;
+          
+        case '5':
+          // Prochaine exécution dans 5 jours
+          nextExecutionDate.setDate(today.getDate() + 5);
+          break;
+          
+        case '10':
+          // Prochaine exécution dans 10 jours
+          nextExecutionDate.setDate(today.getDate() + 10);
+          break;
+          
+        case 'monthly':
+          // Prochaine exécution dans un mois
+          const currentMonth = today.getMonth();
+          nextExecutionDate.setMonth(currentMonth + 1);
+          // Si le jour du mois suivant n'existe pas (exemple : 31 février), on obtient le dernier jour du mois
+          if (nextExecutionDate.getDate() < today.getDate()) {
+            nextExecutionDate.setDate(0); // Reculer au dernier jour du mois précédent
+          }
+          break;
+          
+        default:
+          return today;
+      }
+    
+      return nextExecutionDate;
+    };
+
+    const getNextExecutionDateByDays = (selectedDays:Array<string>) => {
+      // Map pour les jours de la semaine
+      const daysOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+      
+      // Obtenir l'index du jour actuel (0 pour dimanche, 6 pour samedi)
+      const today = new Date();
+      const todayIndex = today.getDay();
+    
+      // Convertir les jours sélectionnés en leurs indices
+      const selectedIndices = selectedDays.map(day => daysOfWeek.indexOf(day.toLowerCase()));
+    
+      // Trouver le prochain jour d'exécution
+      let minDaysUntilNext = 7;
+      let nextDayIndex = todayIndex;
+    
+      selectedIndices.forEach(dayIndex => {
+        const daysUntilNext = (dayIndex - todayIndex + 7) % 7;
+        if (daysUntilNext > 0 && daysUntilNext < minDaysUntilNext) {
+          minDaysUntilNext = daysUntilNext;
+          nextDayIndex = dayIndex;
+        }
+      });
+      console.log('day until : ' +minDaysUntilNext)
+      // Calculer la date de la prochaine exécution
+      const nextExecutionDate = new Date();
+      nextExecutionDate.setDate(today.getDate() + minDaysUntilNext);
+      
+      console.log('nextExecutionDate : '+nextExecutionDate);
+      return nextExecutionDate
+    }
+
 
     
     const checkForm = (formCheck = false) => {
@@ -118,7 +192,7 @@ export default function NewTaskForm() {
 
         if( selectedType !== '' ){
 
-          if( selectedUser !== '' ){
+          if( selectedUser[0] ){
               return true;
           }else{
             error = 'Responsable'
@@ -129,7 +203,7 @@ export default function NewTaskForm() {
         }
         
       }else{
-        error = 'Féquence'
+        error = 'Fréquence'
       }      
       if (formCheck){
         Toast.show({
@@ -150,12 +224,28 @@ export default function NewTaskForm() {
     
 
     useEffect(() => {
-      console.log("selectedFrequency:", selectedFrequency);
+      if (!dateIsChanged && selectedFrequency.length > 0) {
+        const executionDate = getNextExecutionDateByFrequency(selectedFrequency[0]);
+        setSelectedDate(executionDate);
+      }
     }, [selectedFrequency]);
     
     useEffect(() => {
-      console.log("selectedDays:", selectedDays);
+      if (!dateIsChanged && selectedDays.length > 0) {
+        const executionDate = getNextExecutionDateByDays(selectedDays);
+        setSelectedDate(executionDate);
+      }
     }, [selectedDays]);
+
+    const getHouseId = async (userUID: string) => {
+      let res = null
+      const snapshot = await get(ref(database, `users/${userUID}`));
+      if( snapshot.exists() ){
+        res = (snapshot.val() as User).houseId
+      }
+  
+      return res
+    }
 
     const onSubmit = async (data: TaskFormValues) => {
       
@@ -166,6 +256,7 @@ export default function NewTaskForm() {
         let frequency 
 
         if( selectedFrequency.length > 0 ){
+
           frequency = selectedFrequency
         }
         
@@ -178,58 +269,71 @@ export default function NewTaskForm() {
         }
 
         if( dateIsChanged ){
-          frequency = selectedDate
+          frequency = null
         }
 
+        const user = auth.currentUser;
+        let userArray = selectedUser
         
-
+        if( selectedUser[0] === 'all'){
+          userArray = Object.keys(userList).map(user => user)  
+        }
+        
+        //TODO : faire passer en TS Task
         const task = {
-          id: `${Date.now()}`,
+          id: `${Date.now()}${user?.uid}`,
           name : data.name,
           status : "En attente",
-          executionDate : "",
-          responsable : selectedUser,
+          responsable : userArray,
+          houseId: "1234",
           type : selectedType,
           frequency : frequency,
           description : data.description,
+          lastExecutionUserId : '',
+          createdBy: user?.uid,
+          createdDate: Date.now(),
+          nextExecutionUserId : userArray[0],
+          executionDate : selectedDate.toISOString(),
         }
-
-        
 
         console.log(task);
-        const user = auth.currentUser;
-        const updates: Record<string, any> = {};
-        updates[`tasks/${user?.uid}/${`${Date.now()}`}`] = task;
-        
-        try {
-          update(ref(database), updates)
-            .then(() => {
-              Toast.show({
-                text1: 'Ajout de tâche',
-                text2: 'Tâche ajoutée avec succès ! 🎉',
-                type: 'success',
-                position: 'top',
-                visibilityTime: 3000,
-                topOffset: 50,
-                autoHide: true,
-              });
-              navigation.navigate('Dashboard'); 
-            })
-            .catch((error) => {
-              console.error("Erreur lors de l'ajout de la tâche :", error);
-            });
 
-        } catch (error) {
-          Toast.show({
-            text1: '⛔ Ajout de tâche',
-            type: 'error',
-            position: 'top',
-            visibilityTime: 3000,
-            topOffset: 50,
-            autoHide: true,
-          });
-          console.error(error);
+        if( user?.uid ){
+
+          const houseId = await getHouseId(user.uid)
+          const taskRef = push(ref(database, `tasks/${houseId}`));
+        
+          try {
+            set(taskRef, task)
+              .then(() => {
+                Toast.show({
+                  text1: 'Ajout de tâche',
+                  text2: 'Tâche ajoutée avec succès ! 🎉',
+                  type: 'success',
+                  position: 'top',
+                  visibilityTime: 3000,
+                  topOffset: 50,
+                  autoHide: true,
+                });
+                navigation.navigate('Dashboard');
+              })
+              .catch((error) => {
+                console.error("Erreur lors de l'ajout de la tâche :", error);
+              });
+
+          } catch (error) {
+            Toast.show({
+              text1: '⛔ Ajout de tâche',
+              type: 'error',
+              position: 'top',
+              visibilityTime: 3000,
+              topOffset: 50,
+              autoHide: true,
+            });
+            console.error(error);
+          }
         }
+        
       }
 
 
@@ -240,25 +344,33 @@ export default function NewTaskForm() {
       setSelectedType(prevType => (prevType === type ? '' : type));
     };
 
+    //TODO : Récuperer les vrais utilisateur de la maison 
     const userList: { [key: string]: User } = {
-      'Wyn0uVKrIsZ4pbriHzugzOLAxAn1': {
-        name: 'Morgan',
-        type: 'man',
-      },
-      'user2': {
-        name: 'Valérie',
-        type: 'woman',
-      },
+
+      Wyn0uVKrIsZ4pbriHzugzOLAxAn1: {
+          "name": "Morgan",
+          "email": "devendev.pro@gmail.com",
+          "houseId": '1',
+          "type": "man"
+
+        },
+        oiursgWIIUY57KJGdff: {
+          "name": "Valérie",
+          "email": "val.lavril@gmail.com",
+          "houseId": '1',
+          "type": "woman"
+
+        }
     };
 
     const dayList = {
-      "1": "Lundi",
-      "2": "Mardi",
-      "3": "Mercredi",
-      "4": "Jeudi",
-      "5": "Vendredi",
-      "6": "Samedi",
-      "7": "Dimanche"
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi",
+      "sunday": "Dimanche"
     };
 
     const itemSchedule = {
@@ -290,7 +402,7 @@ export default function NewTaskForm() {
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value || ''}
-                  autoCapitalize="characters"
+                  autoCapitalize="sentences"
                   autoComplete="name"
                   textContentType="name"
                 />
@@ -450,7 +562,7 @@ export default function NewTaskForm() {
             <View style={styles.headerBloc}>
               <View style={styles.headerValidation}>
                 <Ionicons size={24}
-                  style={{ color: selectedUser ? '#6CC81D' : '#D9D9D9', marginRight: 8 }}
+                  style={{ color: selectedUser.length > 0 ? '#6CC81D' : '#D9D9D9', marginRight: 8 }}
                   name='checkmark-circle-outline'
                 />
                 <Text style={styles.labelHeader}>Responsable</Text>
@@ -468,26 +580,26 @@ export default function NewTaskForm() {
               <View style={styles.typeContainer}>
                 {Object.keys(userList).map((key) => {
                   return (
-                    <TouchableOpacity key={key} style={[styles.iconBox, selectedUser === userList[key].name && styles.selectedIconBox]}
-                    onPress={() => handleUserSelect(userList[key].name)}>
+                    <TouchableOpacity key={key} style={[styles.iconBox, selectedUser.includes(key)  && styles.selectedIconBox]}
+                    onPress={() => handleUserSelect([key])}>
                       {userList[key].type == 'man'? (
-                          <Man stroke={selectedUser === userList[key].name ? '#6CC81D' : '#D9D9D9'} />
+                          <Man stroke={selectedUser.includes(key) ? '#6CC81D' : '#D9D9D9'} />
                         ) : (
-                          <Woman stroke={selectedUser === userList[key].name ? '#6CC81D' : '#D9D9D9'} />
+                          <Woman stroke={selectedUser.includes(key) ? '#6CC81D' : '#D9D9D9'} />
                         )
 
                       }
                       
-                      <Text style={[styles.labelIcon, selectedUser === userList[key].name && styles.selectedIconBox]}> {userList[key].name}</Text> 
+                      <Text style={[styles.labelIcon, selectedUser.includes(key) && styles.selectedIconBox]}> {userList[key].name}</Text> 
                     </TouchableOpacity>
                   );
                 })}
-                <TouchableOpacity  style={[styles.iconBox, selectedUser === 'all' && styles.selectedIconBox]}
-                    onPress={() => handleUserSelect('all')}>
-                      <EveryUser stroke={selectedUser === "all" ? '#6CC81D' : '#D9D9D9'}></EveryUser>
+                <TouchableOpacity  style={[styles.iconBox, selectedUser.includes('all')  && styles.selectedIconBox]}
+                    onPress={() => handleUserSelect(['all'])}>
+                      <EveryUser stroke={selectedUser.includes('all') ? '#6CC81D' : '#D9D9D9'}></EveryUser>
                       
                       
-                      <Text style={[styles.labelIcon, selectedUser === 'all' && styles.selectedIconBox]}>A tour de rôle</Text> 
+                      <Text style={[styles.labelIcon, selectedUser.includes('all') && styles.selectedIconBox]}>A tour de rôle</Text> 
                     </TouchableOpacity>
               </View>
             )}

@@ -10,31 +10,69 @@ import { ScrollView } from 'react-native-gesture-handler';
 interface Task {
   name: string;
   status: string;
-  executionDate: string;
+  responsable : string[],
+  houseId: string,
+  type : string,
+  frequency : string,
+  description : string,
+  lastExecutionUserId : string,
+  createdBy: string,
+  nextExecutionUserId : string,
+  executionDate : string
 }
 
 
 interface User {
   name: string;
   email: string;
+  houseId: string;
+  type: string;
 }
 
 const Dashboard: React.FC = () => {
 
-  const [data, setData] = useState<Record<string, Task> | null>(null);
+  const currentUser = auth.currentUser;
+
+  if(currentUser){
+
+    const [data, setData] = useState<Record<string, Task> | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const getTasks = async (userId: string) => {
-        
+  const formatDate = (date:string, withHours:boolean = false) => {
+    const dateObject = new Date(date)
+    
+    const day = String(dateObject.getDate()).padStart(2, '0');
+    const month = String(dateObject.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
+    const year = dateObject.getFullYear();
+    const hours = String(dateObject.getHours()).padStart(2, '0');
+    const minutes = String(dateObject.getMinutes()).padStart(2, '0');
+    const seconds = String(dateObject.getSeconds()).padStart(2, '0');
+
+    let stringDate = `${day}/${month}/${year}`;
+
+    if( withHours ){
+      stringDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    }
+  
+    return stringDate
+  };
+
+  const getTasks = async (userHouseId: string) => {
+    
     try {
-      const snapshot = await get(ref(database, `tasks/${userId}`));
+      const snapshot = await get(ref(database, `tasks/${userHouseId}`));
       
       if (snapshot.exists()) {
-        console.log(snapshot.val());
-        setData(snapshot.val());
+        
+        const tasksSnapshot = snapshot.val() as Record<string, Task>;
+        const finalTasks = Object.fromEntries(
+          Object.entries(tasksSnapshot).filter(([_, task]) => task.nextExecutionUserId === currentUser.uid)
+        );
+        
+        setData(finalTasks);
+
       } else {
-        console.log('Aucune donnée disponible');
         setData(null);
       }
     } catch (error) {
@@ -43,51 +81,61 @@ const Dashboard: React.FC = () => {
       setLoading(false);
     }
   };
-  
 
-  useEffect(() => {
+  const getTimeWithoutHours = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-    const user = auth.currentUser;
+  const getHouseId = async (userUID: string) => {
 
-    if (user) {
+    let res = null
+    const snapshot = await get(ref(database, `users/${userUID}`));
 
-      getTasks(user.uid)
-      
-      
+    if( snapshot.exists() ){
+      res = (snapshot.val() as User).houseId
+    }
 
-      const getUser = async () => {
-        try {
-          const snapshot = await get(ref(database, `users/${user.uid}`));
-          
+    return res
+  }
+
+  const fetchData = async () => { 
+
+      try {
+        
+        const userHouseId = await getHouseId(currentUser.uid);
+
+        if( userHouseId ){
+
+          await getTasks(userHouseId);     
+          const snapshot = await get(ref(database, `users/${currentUser.uid}`));
           if (snapshot.exists()) {
             setUser(snapshot.val() as User);
           } else {
-            
             setUser(null);
           }
-        } catch (error) {
-          console.error('Erreur lors de la récupération des données user:', error);
-        } finally {
-          setLoading(false);
         }
+        
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données utilisateur:', error);
+      } finally {
+        setLoading(false);
       }
-
-      getUser();
-    } else {
-      setLoading(false); 
-    }
-
     
+  };
+  
+
+  useEffect(() => {   
+  
+    fetchData();
+
   }, []);
+  
 
   
- // Utilise useFocusEffect pour appeler getTasks chaque fois que le composant est affiché
- useFocusEffect(
-  useCallback(() => {
-    const user = auth.currentUser;
-    getTasks(user ? user.uid : '' );
-  }, [])
-);
+  // Utilise useFocusEffect pour appeler getTasks chaque fois que le composant est affiché
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
   if (loading) {
     return (
       <TemplateWrapper withLogo={true}>
@@ -97,8 +145,7 @@ const Dashboard: React.FC = () => {
   }
 
   const timestamp = Date.now();
-  const date = new Date(timestamp);  
-  const today = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const today = new Date(timestamp);  
 
   return (
   <TemplateWrapper  withLogo={true}>
@@ -113,7 +160,7 @@ const Dashboard: React.FC = () => {
        horizontal
        showsHorizontalScrollIndicator={false} 
        snapToAlignment="center"
-      snapToInterval={355} 
+      snapToInterval={360} 
       decelerationRate="fast"  >
           <View style={styles.container}>
             <View style={styles.tasksContainer}>
@@ -121,11 +168,11 @@ const Dashboard: React.FC = () => {
               <ScrollView style={styles.scrollPart}>
                 <View style={styles.thereTasks}>
                   {Object.keys(data).map((key) => {
-                    if (data[key].executionDate !== today) {
+                    if (getTimeWithoutHours(new Date(data[key].executionDate)).getTime() === getTimeWithoutHours(today).getTime()) {
                       return (
                         <TouchableOpacity key={key} style={styles.task}>
                           <Text  numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
-                          <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                          <Text style={styles.taskStatus}>{formatDate(data[key].executionDate)}</Text>
                         </TouchableOpacity>
                       );
                     }
@@ -136,36 +183,17 @@ const Dashboard: React.FC = () => {
               </ScrollView>
               
             </View>
-            <View style={styles.tasksContainer}>
-              <Text style={styles.today}>Tâches en retard</Text>
-              <ScrollView style={styles.scrollPart}>
-                <View style={styles.thereTasks}>
-                  {Object.keys(data).map((key) => {
-                    if (data[key].executionDate !== today) {
-                      return (
-                        <TouchableOpacity key={key} style={[styles.task, styles.lateTaskColor]}>
-                          <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
-                          <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
-                        </TouchableOpacity>
-                      );
-                    }
-                    return null; 
-                  })}
-                </View>
-                
-              </ScrollView>
-              
-            </View>
+            
             <View style={styles.tasksContainer}>
               <Text style={styles.today}>Tâches à venir</Text>
               <ScrollView style={styles.scrollPart}>
                 <View style={styles.thereTasks}>
                   {Object.keys(data).map((key) => {
-                    if (data[key].executionDate !== today) {
+                    if (getTimeWithoutHours(new Date(data[key].executionDate)).getTime() > getTimeWithoutHours(today).getTime()) {
                       return (
                         <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
                           <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
-                          <Text style={styles.taskStatus}>{data[key].executionDate}</Text>
+                          <Text style={styles.taskStatus}>{formatDate(data[key].executionDate)}</Text>
                         </TouchableOpacity>
                       );
                     }
@@ -175,16 +203,41 @@ const Dashboard: React.FC = () => {
                 
               </ScrollView>
             
-          </View>
+            </View>
+
+            <View style={styles.tasksContainer}>
+              <Text style={styles.today}>Tâches en retard</Text>
+              <ScrollView style={styles.scrollPart}>
+                <View style={styles.thereTasks}>
+                  {Object.keys(data).map((key) => {
+                    if (getTimeWithoutHours(new Date(data[key].executionDate)).getTime() < getTimeWithoutHours(today).getTime()) {
+                      return (
+                        <TouchableOpacity key={key} style={[styles.task, styles.lateTaskColor]}>
+                          <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
+                          <Text style={styles.taskStatus}>{formatDate(data[key].executionDate)}</Text>
+                        </TouchableOpacity>
+                      );
+                    }
+                    return null; 
+                  })}
+                </View>
+                
+              </ScrollView>
+              
+            </View>
+
         </View>
       </ScrollView>
       
       
     ) : (
-      <Text>No data available</Text>
+      <Text style={styles.today} >Aucunes tâches de prévues</Text>
     )}
   </TemplateWrapper>
-);
+  );
+
+  }
+  
 
 };
 
@@ -193,16 +246,15 @@ const styles = StyleSheet.create({
   topContainer: {
     display: 'flex',
     alignItems: 'center',
-    height: '20%'
+    height: '20%',
   },
   container: {
+    flex: 1,
     display: 'flex',
     flexDirection: 'row',
     overflow: 'scroll',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingRight: 130,
-    paddingLeft: 10,
   },
   subtitle: {
     fontSize: 24,
@@ -223,7 +275,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
-    width: '90%',
+    width: '95%',
     paddingVertical: 10, 
     paddingHorizontal: 15,
     backgroundColor: '#A9C6FF',
@@ -237,7 +289,7 @@ const styles = StyleSheet.create({
   },
   taskName: {
     fontSize: 18,
-    width: '65%',
+    width: '60%',
     color: '#fff',
   },
   today: {
@@ -246,13 +298,13 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   tasksContainer: {
-    marginRight: 10,
     display: 'flex',
+    marginHorizontal: 20,
     paddingVertical: 10,
     paddingBottom: 30,
     alignItems: 'center',
-    borderRadius: 10,    
-    width: '37%',
+    borderRadius: 10,  
+    width: 320,
     height:'90%',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },

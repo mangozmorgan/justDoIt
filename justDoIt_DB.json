@@ -1,0 +1,42 @@
+{
+  "tasks": {
+    "1234" : {
+      "31081989ufygfiouygb":{
+
+          "name" : "Litière",
+          "status" : "En attente",
+          "responsable" : ["Morgan"],
+          "houseId": "1234",
+          "type" : "cat",
+          "frequency" : "5",
+          "description" : "",
+          "lastExecutionUserId" : "",
+          "createdBy": "Wyn0uVKrIsZ4pbriHzugzOLAxAn1",
+          "nextExecutionUserId" : "Wyn0uVKrIsZ4pbriHzugzOLAxAn1",
+          "executionDate" : "2024-11-10T11:00:01.130212"
+      }
+          
+
+    }
+  },
+  
+
+  "users": {
+        "Wyn0uVKrIsZ4pbriHzugzOLAxAn1": {
+          "name": "Morgan",
+          "email": "devendev.pro@gmail.com",
+          "houseId": "1234",
+          "type": "man"
+
+        },
+        "oiursgWIIUY57KJGdff": {
+          "name": "Valérie",
+          "email": "val.lavril@gmail.com",
+          "houseId": "1234",
+          "type": "woman"
+
+        }
+
+    }
+  
+}

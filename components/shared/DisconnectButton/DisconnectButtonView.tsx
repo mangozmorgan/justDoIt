@@ -2,7 +2,7 @@
 
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import  useDisconnectButton  from './DisconnectButton.types';
+import  useDisconnectButton  from './DisconnectButtonLogic';
 import styles from './DisconnectButton.styles';
 
 const DisconnectButtonView = () => {

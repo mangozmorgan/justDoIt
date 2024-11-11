@@ -1,6 +1,6 @@
 
 import { ScrollView, View, Text, TextInput, TouchableOpacity, } from 'react-native';
-import  useNewTaskFormLogic  from './NewTaskForm';
+import  useNewTaskFormLogic  from './NewTaskFormLogic';
 import styles from  './NewTaskForm.styles';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';

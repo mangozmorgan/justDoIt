@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from '../components/Home';
-import Login from '../components/Login';
+import Home from '../components/Home/HomeView';
+import Login from '../components/Login/LoginView';
 import Toast from 'react-native-toast-message';
-import Dashboard from '../components/Dashboard';
+import Dashboard from '../components/Dashboard/DashboardView';
 import ProtectedRoute from './ProtectedRoute';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
-import ShoppingList from '../components/ShoppingList';
-import AddTask from '../components/AddTask';
+import ShoppingList from '../components/ShoppingList/ShoppingListView';
+import AddTask from '../components/AddTask/AddTaskView';
 
 export type RootStackParamList = {
   Home: undefined;

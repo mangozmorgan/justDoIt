@@ -1,5 +1,5 @@
-import NewTaskForm from "./shared/NewTaskForm/NewTaskFormView";
-import TemplateWrapper from "./shared/TemplateWrapper/TemplateWrapperView";
+import NewTaskForm from "../shared/NewTaskForm/NewTaskFormView";
+import TemplateWrapper from "../shared/TemplateWrapper/TemplateWrapperView";
 
 
 

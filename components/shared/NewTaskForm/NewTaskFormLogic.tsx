@@ -69,15 +69,10 @@ const UseNewTaskFormLogic = () => {
   const formatTime = (date: Date) => {
     const hours = date.getHours();
     const minutes = date.getMinutes();
-    return `${hours < 10 ? '0' : ''}${hours}HformatTime${minutes < 10 ? '0' : ''}${minutes}`;
+    return `${hours < 10 ? '0' : ''}${hours}H${minutes < 10 ? '0' : ''}${minutes}`;
   };
 
-  const createDateWithTime = (timeString: string) => {
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const date = new Date();
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-  };
+  
 
   const [taskName, setTaskName] = useState('');
   const [selectedType, setSelectedType] = useState('');
@@ -92,7 +87,6 @@ const UseNewTaskFormLogic = () => {
   const [isDateVisible, setDateVisible] = useState(false);
   const [selectedFrequency, setSelectedFrequency] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  // const [selectedHour, setSelectedHour] = useState(createDateWithTime('00:00'));
   const [selectedHour, setSelectedHour] = useState<Date | null>(null);
 
   const [dateIsChanged, setDateIsChanged] = useState(false);

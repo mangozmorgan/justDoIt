@@ -67,7 +67,7 @@ export default function NewTaskForm() {
 
   return (
     <View style={styles.pageWidth}>
-      <Cloud3></Cloud3> 
+      {/* <Cloud3></Cloud3>  */}
       <Text style={styles.subtitle}>Créer une nouvelle tâche</Text>
       <ScrollView style={styles.scrollable} contentContainerStyle={{ paddingBottom: 80 }}>
           <View style={styles.formContainer}>
@@ -324,9 +324,6 @@ export default function NewTaskForm() {
                     </View>
                   )}
                 </View>
-
-{/* bloc responsable */}
-
 
 
             {/* bloc responsable */}

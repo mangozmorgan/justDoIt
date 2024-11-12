@@ -12,7 +12,6 @@ import Man from '../../../assets/svg/man';
 import Woman from '../../../assets/svg/woman';
 import CustomMultiPicker from "react-native-multiple-select-list";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Cloud3 from '../../../assets/svg/cloud3';
 
 
 export default function NewTaskForm() {  
@@ -67,7 +66,6 @@ export default function NewTaskForm() {
 
   return (
     <View style={styles.pageWidth}>
-      {/* <Cloud3></Cloud3>  */}
       <Text style={styles.subtitle}>Créer une nouvelle tâche</Text>
       <ScrollView style={styles.scrollable} contentContainerStyle={{ paddingBottom: 80 }}>
           <View style={styles.formContainer}>
@@ -240,28 +238,7 @@ export default function NewTaskForm() {
                         )}
                     </View>
                   )}
-                  {/* Heure  */}
-                  {/* <TouchableOpacity style={styles.buttonPickers} onPress={toggleDate}>
-                    <Text style={[styles.labelPicker, dateIsChanged ? styles.selectedIconBox : null]}>
-                      {selectedHour}
-                    </Text>
-                  </TouchableOpacity>
-                  {isDateVisible && (
-                    <View style={styles.dateContainer}>
-                          <Text >{selectedHour}</Text>
-                        {showDateInput && (
-                          <DateTimePicker
-                            value={selectedDate}
-                            mode="time"
-                            display="spinner"
-                            onChange={handleDateChange}
-                          />
-                        )}
-                    </View>
-                  )} */}
-
-
-
+                  
                 </View>
               )}
             </View>
@@ -274,7 +251,7 @@ export default function NewTaskForm() {
                     size={24}
                     style={{
                       color: selectedHour && selectedHour instanceof Date && !isNaN(selectedHour.getTime())
-                        ? selectedHour.getHours() !== 0 || selectedHour.getMinutes() !== 0
+                        ? selectedHour !== null
                           ? '#6CC81D'
                           : '#D9D9D9'
                         : '#D9D9D9',
@@ -283,12 +260,12 @@ export default function NewTaskForm() {
                     name="checkmark-circle-outline"
                   />
                   <Text style={styles.labelHeader}>
-                    Heure : 
-                    {selectedHour && selectedHour instanceof Date && !isNaN(selectedHour.getTime())
+                    Heure  
+                    {/* {selectedHour && selectedHour instanceof Date && !isNaN(selectedHour.getTime())
                       ? selectedHour.getHours() !== 0 || selectedHour.getMinutes() !== 0
                         ? ` ${selectedHour.getHours()}H${selectedHour.getMinutes()}`
                         : ' Non définie'
-                      : ' Non définie'}
+                      : ' Non définie'} */}
                   </Text>
                 </View>
 

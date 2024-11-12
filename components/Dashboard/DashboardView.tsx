@@ -4,6 +4,7 @@ import TemplateWrapper from "../shared/TemplateWrapper/TemplateWrapperView";
 import DashboardLogic from './DashboardLogic';
 import { ActivityIndicator, ScrollView, TouchableOpacity, View, Text } from 'react-native';
 import NavBar from '../NavBar/NavBarView';
+import Cloud1 from '../../assets/svg/cloud1';
 
 const DashBoard = () => {
 
@@ -27,7 +28,7 @@ const DashBoard = () => {
     } = dashboardLogic;
     
     return (
-            <TemplateWrapper  withLogo={true}>
+            <TemplateWrapper  withLogo={true}>     
     
                 <View style={styles.topContainer}>
                 <Text style={styles.subtitle}>Hello {user?.name}</Text>

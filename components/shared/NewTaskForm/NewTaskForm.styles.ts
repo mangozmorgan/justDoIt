@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     pageWidth: {
-      paddingBottom: 80,
       width: "100%",
       alignItems: 'center',
     },

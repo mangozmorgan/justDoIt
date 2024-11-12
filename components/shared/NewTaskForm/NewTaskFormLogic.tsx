@@ -118,16 +118,11 @@ const UseNewTaskFormLogic = () => {
 
   const showDatepicker = () => {
     setShowDateInput(true);
-  };
+  }; 
   
-  const showHourpicker = () => {
-    setShowHourInput(true);
-  };
-
   const handleTypeSelect = (type:any) => {
     setSelectedType(prevType => (prevType === type ? '' : type));
   };
-
   
   const handleDaysChange = (res: any) => {
     setDateIsChanged(false)
@@ -239,7 +234,7 @@ const UseNewTaskFormLogic = () => {
         nextDayIndex = dayIndex;
       }
     });
-    console.log('day until : ' +minDaysUntilNext)
+    
     // Calculer la date de la prochaine exécution
     const nextExecutionDate = new Date();
     nextExecutionDate.setDate(today.getDate() + minDaysUntilNext);
@@ -257,7 +252,12 @@ const UseNewTaskFormLogic = () => {
       if( selectedType !== '' ){
 
         if( selectedUser[0] ){
-            return true;
+
+            if( selectedHour ){
+              return true;
+            }else{
+              error = 'Heure'
+            }
         }else{
           error = 'Responsable'
         }

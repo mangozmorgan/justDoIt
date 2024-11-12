@@ -1,4 +1,4 @@
-// TemplateWrapperView.tsx
+
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { View } from 'react-native';
@@ -6,8 +6,6 @@ import { GradientWrapperProps } from '../../../interfaces/GradientWrapperPropsIn
 import  TemplateWrapperLogic  from './TemplateWrapperLogic'; // Import du hook de logique
 import styles from './TemplateWrapper.styles'; // Import des styles
 import DisconnectButton from '../DisconnectButton/DisconnectButtonView';
-import Logo from '../LogoHome/LogoHomeView';
-import LogoAndTitle from '../LogoAndTitle/LogoAndTitleView';
 
 const TemplateWrapperView: React.FC<GradientWrapperProps> = ({ children, withLogo = true }) => {
   const {  displayDisconnectButton, getLogo } = TemplateWrapperLogic(); 

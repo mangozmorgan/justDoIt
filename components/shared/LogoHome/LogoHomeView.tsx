@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import styles from './LogoHome.styles';
 import useFonts from '../../../hooks/useFont';
 
@@ -12,8 +12,8 @@ export default function Logo() {
   }
 
   return (
-    <Text style={[styles.title, { fontFamily: 'IngridDarling-Regular' }]}>
-      Just Do It !
-    </Text>
+        <Text style={[styles.title, { fontFamily: 'IngridDarling-Regular' }]}>
+          Just Do It !
+        </Text>
   );
 }

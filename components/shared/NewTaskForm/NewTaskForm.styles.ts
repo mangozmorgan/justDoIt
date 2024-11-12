@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     pageWidth: {
       width: "100%",
       alignItems: 'center',
+      paddingBottom: 40
     },
     dateContainer: {
       width: "100%",
@@ -114,13 +115,12 @@ const styles = StyleSheet.create({
     },
     scrollable: {
       width: '90%',
-  
     },
     formContainer: {
       width: '100%',
       backgroundColor: 'rgba(255, 255, 255, 0.4)',
       borderRadius: 10,
-      paddingVertical: 20,
+      paddingTop: 20,
       paddingHorizontal: 20,
       position: 'relative',
       zIndex: 1,

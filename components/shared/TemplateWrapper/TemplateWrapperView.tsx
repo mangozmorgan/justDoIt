@@ -12,9 +12,17 @@ const TemplateWrapperView: React.FC<GradientWrapperProps> = ({ children, withLog
 
   return (
     <LinearGradient colors={['#8EC5FC', '#E0C3FC']} style={styles.gradient}>
+      {displayDisconnectButton() ?
+        <View style={styles.header}>
+          <DisconnectButton />
+        </View>
+       :
+       null
+      }
+       
       <View style={styles.container}>
         {withLogo ? getLogo() : null}
-        {displayDisconnectButton() && <DisconnectButton />}
+        
         {children}
       </View>
     </LinearGradient>

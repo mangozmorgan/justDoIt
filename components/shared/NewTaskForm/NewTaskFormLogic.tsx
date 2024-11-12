@@ -61,21 +61,46 @@ const UseNewTaskFormLogic = () => {
     'monthly': 'Tout les mois',
   }
 
+  const getCurrentTime = () => {
+    const now = new Date();
+    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatTime = (date: Date) => {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${hours < 10 ? '0' : ''}${hours}HformatTime${minutes < 10 ? '0' : ''}${minutes}`;
+  };
+
+  const createDateWithTime = (timeString: string) => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+
   const [taskName, setTaskName] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [description, setDescription] = useState('');
   const [selectedUser, handleUserSelect] = useState<string[]>([]);
   const [isExpandedType, setIsExpandedType] = useState(false);
   const [isExpandedUser, setIsExpandedUser] = useState(false);
+  const [isExpandedHour, setIsExpandedHour] = useState(false);
   const [isExpandedSchedule, setIsExpandedSchedule] = useState(false);
   const [isFrequencyPickerVisible, setIsFrequencyPickerVisible] = useState(false);
   const [isDaysPickerVisible, setIsDaysPickerVisible] = useState(false);
   const [isDateVisible, setDateVisible] = useState(false);
   const [selectedFrequency, setSelectedFrequency] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  // const [selectedHour, setSelectedHour] = useState(createDateWithTime('00:00'));
+  const [selectedHour, setSelectedHour] = useState<Date | null>(null);
+
   const [dateIsChanged, setDateIsChanged] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
   const [showDateInput, setShowDateInput] = useState<boolean>(false);
+  const [showHourInput, setShowHourInput] = useState<boolean>(false);
+
+  
 
   const toggleFrequencyPicker = () => {
     setDateVisible(false)
@@ -99,6 +124,10 @@ const UseNewTaskFormLogic = () => {
 
   const showDatepicker = () => {
     setShowDateInput(true);
+  };
+  
+  const showHourpicker = () => {
+    setShowHourInput(true);
   };
 
   const handleTypeSelect = (type:any) => {
@@ -133,6 +162,18 @@ const UseNewTaskFormLogic = () => {
     setSelectedFrequency(res);
     setSelectedDays([]);
     setDateIsChanged(false)
+  };
+  
+  const handleHourChange = (event: any, date?: Date) => {
+    if (date) {
+      // Si une date est sélectionnée, mettre à jour selectedHour
+      setSelectedHour(date);
+    } else if (event?.nativeEvent?.timestamp) {
+      // Si on reçoit un timestamp, le convertir en Date
+      setSelectedHour(new Date(event.nativeEvent.timestamp));
+    }
+
+    setShowDateInput(!showDateInput)
   };
 
   const getHouseId = async (userUID: string) => {
@@ -300,6 +341,7 @@ const UseNewTaskFormLogic = () => {
         createdDate: Date.now(),
         nextExecutionUserId : userArray[0],
         executionDate : selectedDate.toISOString(),
+        executionHour : selectedHour?.toISOString().slice(11, 16),
       }
 
       console.log(task);
@@ -367,8 +409,13 @@ const UseNewTaskFormLogic = () => {
     getNextExecutionDateByDays, 
     showDatepicker, 
     setIsExpandedUser,
+    handleHourChange,
+    setIsExpandedHour,
+    isExpandedHour,
     isExpandedUser,
     handleSubmit,
+    showHourInput,
+    setShowHourInput,
     handleTypeSelect,
     isExpandedSchedule,
     setIsExpandedSchedule,
@@ -383,6 +430,7 @@ const UseNewTaskFormLogic = () => {
     selectedType,
     setSelectedType,
     showDateInput,
+    formatTime,
     setShowDateInput,
     selectedUser ,
     handleUserSelect,
@@ -397,6 +445,9 @@ const UseNewTaskFormLogic = () => {
     description,
     setDescription,
     onSubmit,
+    selectedHour,
+    setSelectedHour,
+    getCurrentTime
   };
 };
 

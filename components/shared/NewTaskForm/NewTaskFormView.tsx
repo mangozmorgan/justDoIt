@@ -15,9 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Cloud3 from '../../../assets/svg/cloud3';
 
 
-export default function NewTaskForm() {
-
-  
+export default function NewTaskForm() {  
 
   const {
     control,
@@ -42,8 +40,12 @@ export default function NewTaskForm() {
     selectedDays,
     handleTypeSelect,
     selectedDate,
+    setIsExpandedHour,
+    isExpandedHour,
     dateIsChanged,
     description,
+    formatTime,
+    handleHourChange,
     toggleDaysPicker,
     handleFrequencyChange,
     isDaysPickerVisible,
@@ -58,6 +60,9 @@ export default function NewTaskForm() {
     itemSchedule,
     setDescription,
     onSubmit,
+    showHourInput,
+    setShowHourInput,
+    selectedHour,
   } = useNewTaskFormLogic();
 
   return (
@@ -138,6 +143,7 @@ export default function NewTaskForm() {
                 </View>
               )}
             </View>
+            
 
             {/* bloc schedule */}
             <View style={styles.blocForm}>
@@ -158,7 +164,7 @@ export default function NewTaskForm() {
                   )}
                 </TouchableOpacity>
               </View>
-
+                  
               {isExpandedSchedule && (
                 <View style={styles.containPicker}>
                   {/* Frequency Picker */}
@@ -233,14 +239,94 @@ export default function NewTaskForm() {
                           />
                         )}
                     </View>
-                  )
-                  }
+                  )}
+                  {/* Heure  */}
+                  {/* <TouchableOpacity style={styles.buttonPickers} onPress={toggleDate}>
+                    <Text style={[styles.labelPicker, dateIsChanged ? styles.selectedIconBox : null]}>
+                      {selectedHour}
+                    </Text>
+                  </TouchableOpacity>
+                  {isDateVisible && (
+                    <View style={styles.dateContainer}>
+                          <Text >{selectedHour}</Text>
+                        {showDateInput && (
+                          <DateTimePicker
+                            value={selectedDate}
+                            mode="time"
+                            display="spinner"
+                            onChange={handleDateChange}
+                          />
+                        )}
+                    </View>
+                  )} */}
 
 
 
                 </View>
               )}
             </View>
+
+            {/* bloc heure */}
+            <View style={styles.blocForm}>
+              <View style={styles.headerBloc}>
+                <View style={styles.headerValidation}>
+                  <Ionicons
+                    size={24}
+                    style={{
+                      color: selectedHour && selectedHour instanceof Date && !isNaN(selectedHour.getTime())
+                        ? selectedHour.getHours() !== 0 || selectedHour.getMinutes() !== 0
+                          ? '#6CC81D'
+                          : '#D9D9D9'
+                        : '#D9D9D9',
+                      marginRight: 8,
+                    }}
+                    name="checkmark-circle-outline"
+                  />
+                  <Text style={styles.labelHeader}>
+                    Heure : 
+                    {selectedHour && selectedHour instanceof Date && !isNaN(selectedHour.getTime())
+                      ? selectedHour.getHours() !== 0 || selectedHour.getMinutes() !== 0
+                        ? ` ${selectedHour.getHours()}H${selectedHour.getMinutes()}`
+                        : ' Non définie'
+                      : ' Non définie'}
+                  </Text>
+                </View>
+
+                <TouchableOpacity onPress={() => setIsExpandedHour(!isExpandedHour)} style={styles.toggleButton}>
+                  {isExpandedHour ? (
+                    <Ionicons name="chevron-up-outline" size={24} color="black" />
+                  ) : (
+                    <Ionicons name="chevron-down-outline" size={24} color="black" />
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              {isExpandedHour && (
+                <View style={styles.containPicker}>
+                  <View style={styles.dateContainer}>
+                    <TouchableOpacity onPress={showDatepicker} style={styles.pickerInput}>
+                      <Text>
+                        {selectedHour instanceof Date && !isNaN(selectedHour.getTime()) 
+                          ? formatTime(selectedHour)
+                          : 'Non définie'}
+                      </Text>
+                    </TouchableOpacity>
+
+                    {showDateInput && (
+                      <DateTimePicker
+                        value={selectedHour || new Date()} 
+                        mode="time"
+                        display="spinner"
+                        onChange={handleHourChange}
+                        />
+                      )}
+                      </View>
+                    </View>
+                  )}
+                </View>
+
+{/* bloc responsable */}
+
 
 
             {/* bloc responsable */}

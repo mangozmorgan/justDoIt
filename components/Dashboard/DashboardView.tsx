@@ -2,9 +2,11 @@
 import styles from './Dashboard.styles'
 import TemplateWrapper from "../shared/TemplateWrapper/TemplateWrapperView";
 import DashboardLogic from './DashboardLogic';
-import { ActivityIndicator, ScrollView, TouchableOpacity, View, Text } from 'react-native';
+import { ActivityIndicator, ScrollView, TouchableOpacity, View, Text, Button } from 'react-native';
+import Modal from 'react-native-modal'
 import NavBar from '../NavBar/NavBarView';
-import Cloud1 from '../../assets/svg/cloud1';
+import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 const DashBoard = () => {
 
@@ -18,13 +20,20 @@ const DashBoard = () => {
         );
     }
 
+    
+
+    
+
     const {
         user,
-        loading,
-        data,
-        getTimeWithoutHours,
+        data,    
+        isModalDetailsTaskVisible,    
+        getTimeWithoutHours,      
         today,
-        formatDate
+        handleModal,
+        getTaskDetails,
+        formatDate,
+        modalDatas
     } = dashboardLogic;
     
     return (
@@ -34,7 +43,50 @@ const DashBoard = () => {
             <Text style={styles.subtitle}>Hello {user?.name}</Text>
             <NavBar />
             </View>
-            
+            <Modal isVisible={isModalDetailsTaskVisible}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalTask}>
+                        <View style={styles.modalTaskHeader}>
+                            <Ionicons
+                            name="close-outline" 
+                            size={24} 
+                            onPress={() =>handleModal()}
+                            color="black"></Ionicons>
+                        </View>
+                        
+                        <Text style={styles.modalTitle}>
+                            {modalDatas?.name}
+                        </Text>
+                        <View style={{flexDirection:'row'}}>
+                            <Text style={styles.littleBold}>Responsable : </Text>
+                            <Text>{modalDatas?.responsable}</Text>
+                            
+                        </View>
+                        <View style={{flexDirection:'row'}} >
+                            <Text style={styles.littleBold}>Dernière exécution : </Text>
+                            <Text>{modalDatas?.lastExecutionUserId}</Text>
+                            
+                        </View>
+                        <View style={{flexDirection:'row'}}>
+                            <Text style={styles.littleBold}>Créé par : </Text>   
+                            <Text>{modalDatas?.createdBy}</Text>   
+                            
+                        </View>
+                        <View style={{flexDirection:'row'}}>
+                            <Text style={styles.littleBold}>Quand : </Text>
+                            <Text>{modalDatas?.executionDate}</Text>
+                              
+                        </View>
+                        <View style={{alignItems:'center', marginTop:20}}>
+                            <TouchableOpacity style={styles.button} onPress={() =>handleModal()}>
+                                <Text style={styles.buttonText}>Fermer</Text>
+                            </TouchableOpacity>
+                        </View>
+                          
+                    </View>
+               
+                </View>
+            </Modal>
             {data ? (
             <ScrollView
             horizontal
@@ -50,7 +102,10 @@ const DashBoard = () => {
                         {Object.keys(data).map((key) => {
                             if (getTimeWithoutHours(new Date(data[key].executionDate)).getTime() === getTimeWithoutHours(today).getTime()) {
                             return (
-                                <TouchableOpacity key={key} style={styles.task}>
+                                <TouchableOpacity
+                                 key={key} 
+                                 onPress={() =>getTaskDetails(data[key])}
+                                 style={styles.task}>
                                 <Text  numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
                                 <Text style={styles.taskStatus}>{formatDate(data[key].executionDate)}</Text>
                                 </TouchableOpacity>
@@ -71,9 +126,12 @@ const DashBoard = () => {
                         {Object.keys(data).map((key) => {
                             if (getTimeWithoutHours(new Date(data[key].executionDate)).getTime() > getTimeWithoutHours(today).getTime()) {
                             return (
-                                <TouchableOpacity key={key} style={[styles.task, styles.futurTaskColor]}>
-                                <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
-                                <Text style={styles.taskStatus}>{formatDate(data[key].executionDate)}</Text>
+                                <TouchableOpacity 
+                                    key={key} 
+                                    onPress={() =>getTaskDetails(data[key])}
+                                    style={[styles.task, styles.futurTaskColor]}>
+                                    <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
+                                    <Text style={styles.taskStatus}>{formatDate(data[key].executionDate)}</Text>
                                 </TouchableOpacity>
                             );
                             }
@@ -92,7 +150,10 @@ const DashBoard = () => {
                         {Object.keys(data).map((key) => {
                             if (getTimeWithoutHours(new Date(data[key].executionDate)).getTime() < getTimeWithoutHours(today).getTime()) {
                             return (
-                                <TouchableOpacity key={key} style={[styles.task, styles.lateTaskColor]}>
+                                <TouchableOpacity
+                                 key={key} 
+                                 onPress={() =>getTaskDetails(data[key])}
+                                 style={[styles.task, styles.lateTaskColor]}>
                                 <Text numberOfLines={1} style={styles.taskName}>{data[key].name}</Text>
                                 <Text style={styles.taskStatus}>{formatDate(data[key].executionDate)}</Text>
                                 </TouchableOpacity>

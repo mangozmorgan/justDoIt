@@ -15,12 +15,49 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-start',
       alignItems: 'center',
     },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalTask: {
+      borderRadius: 5,
+      padding: 20,
+      maxWidth: '95%',
+      backgroundColor: '#fff',
+    },
+    modalTaskHeader: {
+      alignItems: 'flex-end'
+    },
     subtitle: {
       fontSize: 24,
       textAlign: 'center',
       color: '#fff',
       marginBottom: 20,
     },
+    modalTitle: {
+      fontWeight: 'bold',
+      fontSize: 24,
+      textAlign: 'center',
+      marginBottom: 20,
+    },
+    button: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#A9C6FF',
+      paddingVertical: 12,
+      paddingHorizontal: 30,
+      borderRadius: 10,
+      marginBottom: 20,
+      width: '100%',
+      justifyContent: 'center',
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 15.5,
+      marginLeft: 10,
+    },
+    littleBold: {fontWeight: 'bold'},
     cloudContainer: {
       color: '#fff',
       opacity: 0.6,

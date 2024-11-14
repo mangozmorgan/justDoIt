@@ -5,6 +5,7 @@ import DashboardLogic from './DashboardLogic';
 import { ActivityIndicator, ScrollView, TouchableOpacity, View, Text, Button } from 'react-native';
 import Modal from 'react-native-modal'
 import NavBar from '../NavBar/NavBarView';
+import moment from 'moment';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -59,22 +60,19 @@ const DashBoard = () => {
                         </Text>
                         <View style={{flexDirection:'row'}}>
                             <Text style={styles.littleBold}>Responsable : </Text>
-                            <Text>{modalDatas?.responsable}</Text>
-                            
+                            <Text>{modalDatas?.responsable.join(', ')}</Text>
                         </View>
                         <View style={{flexDirection:'row'}} >
                             <Text style={styles.littleBold}>Dernière exécution : </Text>
                             <Text>{modalDatas?.lastExecutionUserId}</Text>
-                            
                         </View>
                         <View style={{flexDirection:'row'}}>
                             <Text style={styles.littleBold}>Créé par : </Text>   
-                            <Text>{modalDatas?.createdBy}</Text>   
-                            
+                            <Text>{modalDatas?.createdBy}</Text>       
                         </View>
                         <View style={{flexDirection:'row'}}>
                             <Text style={styles.littleBold}>Quand : </Text>
-                            <Text>{modalDatas?.executionDate}</Text>
+                            <Text>{moment(modalDatas?.executionDate).format('DD MMM YYYY')}</Text>
                               
                         </View>
                         <View style={{alignItems:'center', marginTop:20}}>

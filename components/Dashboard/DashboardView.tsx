@@ -44,7 +44,7 @@ const DashBoard = () => {
             <Text style={styles.subtitle}>Hello {user?.name}</Text>
             <NavBar />
             </View>
-            <Modal isVisible={isModalDetailsTaskVisible}>
+            <Modal isVisible={isModalDetailsTaskVisible} onBackdropPress={handleModal}>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalTask}>
                         <View style={styles.modalTaskHeader}>
@@ -78,6 +78,9 @@ const DashBoard = () => {
                         <View style={{alignItems:'center', marginTop:20}}>
                             <TouchableOpacity style={styles.button} onPress={() =>handleModal()}>
                                 <Text style={styles.buttonText}>Fermer</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttonRemove} onPress={() =>handleModal()}>
+                                <Text style={styles.buttonText}>Supprimer</Text>
                             </TouchableOpacity>
                         </View>
                           

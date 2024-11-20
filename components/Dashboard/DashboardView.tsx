@@ -79,15 +79,15 @@ const DashBoard = () => {
                               
                         </View>
                         <View style={{alignItems:'center', marginTop:20}}>
-                            <TouchableOpacity style={styles.button} onPress={() =>handleModal()}>
+                            {/* <TouchableOpacity style={[styles.buttonBase, styles.buttonGrey]} onPress={() =>handleModal()}>
                                 <Text style={styles.buttonText}>Fermer</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                             {modalDatas &&
-                            <View>
-                                <TouchableOpacity style={styles.buttonRemove} onPress={() =>validateTask(modalDatas?.id)}>
+                            <View >
+                                <TouchableOpacity style={[styles.buttonBase, styles.buttonValidation]} onPress={() =>validateTask(modalDatas?.id)}>
                                     <Text style={styles.buttonText}>Valider la tâche</Text>
                                 </TouchableOpacity>
-                                 <TouchableOpacity style={styles.buttonRemove} onPress={() =>removeTask(modalDatas?.id)}>
+                                 <TouchableOpacity style={[styles.buttonBase, styles.buttonRemove]} onPress={() =>removeTask(modalDatas?.id)}>
                                     <Text style={styles.buttonText}>Supprimer</Text>
                                 </TouchableOpacity>
                             </View>

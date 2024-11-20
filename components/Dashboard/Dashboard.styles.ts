@@ -41,28 +41,32 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       marginBottom: 20,
     },
-    button: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#A9C6FF',
-      paddingVertical: 12,
-      paddingHorizontal: 30,
-      borderRadius: 10,
-      marginBottom: 5,
-      width: '100%',
-      justifyContent: 'center',
-    },
+    
     buttonRemove: {
+      backgroundColor: '#eb4d4b',
+    },
+    
+    buttonValidation: {
+      backgroundColor: '#6CC81D',
+    },
+    
+    buttonGrey: {
+      backgroundColor: '#A9C6FF',
+
+    },
+
+    buttonBase:{
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#eb4d4b',
       paddingVertical: 12,
       paddingHorizontal: 30,
       borderRadius: 10,
       marginBottom: 20,
-      width: '100%',
+      // width: '100%',
       justifyContent: 'center',
     },
+
+
     buttonText: {
       color: 'white',
       fontSize: 15.5,

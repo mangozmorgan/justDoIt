@@ -319,10 +319,10 @@ const UseNewTaskFormLogic = () => {
       if( selectedUser[0] === 'all'){
         userArray = Object.keys(userList).map(user => user)  
       }
-      
+      const taskId = Date.now()
       //TODO : faire passer en TS Task
       const task = {
-        id: `${Date.now()}${user?.uid}`,
+        id: taskId,
         name : data.name,
         status : "En attente",
         responsable : userArray,
@@ -344,7 +344,7 @@ const UseNewTaskFormLogic = () => {
 
         
         const houseId = await getHouseId(user.uid)
-        const taskRef = push(ref(database, `tasks/${houseId}`));
+        const taskRef = ref(database, `tasks/${houseId}/${taskId}`);
       
         try {
           set(taskRef, task)

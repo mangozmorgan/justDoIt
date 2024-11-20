@@ -2,9 +2,10 @@ import { User } from '../../interfaces/UserInterface'
 import { useCallback, useEffect, useState } from "react";
 import { auth, database } from "../../config/firebaseConfig";
 import { Task } from "../../interfaces/TaskInterface";
-import {  get, ref } from "firebase/database";
+import {  get, ref,remove} from "firebase/database";
 import { useFocusEffect } from '@react-navigation/native';
 import { PublicUserInterface } from '../../interfaces/PublicUserInterface';
+import Toast from 'react-native-toast-message';
 
 
 
@@ -27,6 +28,7 @@ const DashboardLogic = () => {
         const [modalDatas, setModalDatas] = useState<Task | null>(null);
 
         const formatDate = (date:string, withHours:boolean = false) => {
+
           const dateObject = new Date(date)            
           const day = String(dateObject.getDate()).padStart(2, '0');
           const month = String(dateObject.getMonth() + 1).padStart(2, '0'); 
@@ -59,12 +61,6 @@ const DashboardLogic = () => {
             console.error("allHouseUsers n'est pas défini")
           }
           
-          
-          console.log(task);
-          // if( realname ){
-          //   task.responsable = realname
-
-          // }
           setModalDatas(task)
           handleModal()
 
@@ -114,6 +110,50 @@ const DashboardLogic = () => {
           } else {
             setUser(null);
           }
+        }
+
+        
+
+        const removeTask = async (taskId: string) => {
+          
+          try{
+
+            await remove(ref(database, `tasks/${houseId}/${taskId}`));
+
+            setData((prevData) => {
+              if (!prevData) return prevData;
+              const updatedData = { ...prevData };
+              delete updatedData[taskId];
+              return updatedData;
+            });
+            handleModal()
+            
+            Toast.show({
+              text1: 'Suppression de tâche',
+              text2: 'Tâche supprimée avec succès ! 🎉',
+              type: 'success',
+              position: 'top',
+              visibilityTime: 3000,
+              topOffset: 50,
+              autoHide: true,
+            });
+            
+            
+          }catch(error){
+
+            Toast.show({
+              text1: 'Suppression de tâche',
+              text2: 'Oups il y à eu un problème.. Veuillez recommencer',
+              type: 'error',
+              position: 'top',
+              visibilityTime: 3000,
+              topOffset: 50,
+              autoHide: true,
+            });
+
+          }
+          
+
         }
 
         const getTimeWithoutHours = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -194,7 +234,8 @@ const DashboardLogic = () => {
             handleModal,
             modalDatas,
             getTimeWithoutHours,
-            formatDate
+            formatDate,
+            removeTask
         }
 
     }

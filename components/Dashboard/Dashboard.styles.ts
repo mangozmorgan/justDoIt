@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     modalTask: {
       borderRadius: 5,
       padding: 20,
-      maxWidth: '95%',
+      width: '95%',
       backgroundColor: '#fff',
     },
     modalTaskHeader: {

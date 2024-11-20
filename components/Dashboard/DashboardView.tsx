@@ -78,6 +78,11 @@ const DashBoard = () => {
                             <Text>{moment(modalDatas?.executionDate).format('DD MMM YYYY')}</Text>
                               
                         </View>
+                        <View style={{flexDirection:'row'}}>
+                            <Text style={styles.littleBold}>Commentaires : </Text>
+                            <Text>{modalDatas?.description}</Text>
+                              
+                        </View>
                         <View style={{alignItems:'center', marginTop:20}}>
                             {/* <TouchableOpacity style={[styles.buttonBase, styles.buttonGrey]} onPress={() =>handleModal()}>
                                 <Text style={styles.buttonText}>Fermer</Text>

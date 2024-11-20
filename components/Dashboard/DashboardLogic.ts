@@ -155,6 +155,25 @@ const DashboardLogic = () => {
           
 
         }
+        
+        const validateTask = async (taskId: string) => {
+          
+          
+          //TODO :  doit checker :
+
+          //si la tache est recurrente           
+
+          //si OUI :
+            //et plusieurs responsables, alors on passe le nextUtilisateurId au suivant, on donne l'id du responsable actuel à lastExecutionId 
+          
+            //on gère la prochaine date d'execution en fonction de la récurrence et on met a jour la tache dans dashboard (data)
+          
+          //si NON :
+            // on peut la supprimer de la DB définitivement 
+
+          // Toast pour valider l'action de user
+
+        }
 
         const getTimeWithoutHours = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
@@ -235,7 +254,8 @@ const DashboardLogic = () => {
             modalDatas,
             getTimeWithoutHours,
             formatDate,
-            removeTask
+            removeTask,
+            validateTask
         }
 
     }

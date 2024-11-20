@@ -34,6 +34,7 @@ const DashBoard = () => {
         handleModal,
         getTaskDetails,
         formatDate,
+        validateTask,
         removeTask,
         modalDatas
     } = dashboardLogic;
@@ -82,9 +83,15 @@ const DashBoard = () => {
                                 <Text style={styles.buttonText}>Fermer</Text>
                             </TouchableOpacity>
                             {modalDatas &&
-                            <TouchableOpacity style={styles.buttonRemove} onPress={() =>removeTask(modalDatas?.id)}>
-                                <Text style={styles.buttonText}>Supprimer</Text>
-                            </TouchableOpacity>
+                            <View>
+                                <TouchableOpacity style={styles.buttonRemove} onPress={() =>validateTask(modalDatas?.id)}>
+                                    <Text style={styles.buttonText}>Valider la tâche</Text>
+                                </TouchableOpacity>
+                                 <TouchableOpacity style={styles.buttonRemove} onPress={() =>removeTask(modalDatas?.id)}>
+                                    <Text style={styles.buttonText}>Supprimer</Text>
+                                </TouchableOpacity>
+                            </View>
+                               
                             
                             }
                             

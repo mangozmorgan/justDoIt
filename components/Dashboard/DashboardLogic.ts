@@ -6,8 +6,10 @@ import {  get, ref,remove} from "firebase/database";
 import { useFocusEffect } from '@react-navigation/native';
 import { PublicUserInterface } from '../../interfaces/PublicUserInterface';
 import Toast from 'react-native-toast-message';
+import TaskService from '../../services/TaskService';
 
 
+const taskService = TaskService();
 
 const DashboardLogic = () => {
 
@@ -67,7 +69,7 @@ const DashboardLogic = () => {
         }
 
         const getAllUsersFromHouse = async (houseId: string) => {
-          console.log("getAllUsersFromHouse");
+          
           const snapshot = await get(ref(database, `userByHouse/${houseId}`));
 
           const data = snapshot.val();
@@ -82,7 +84,7 @@ const DashboardLogic = () => {
         const getTasks = async (userUID: string) => {
           
             try {
-              
+              console.log('on recup les tasks')
               const snapshot = await get(ref(database, `tasks/${userUID}`));
               if (snapshot.exists()) {
                 
@@ -115,43 +117,51 @@ const DashboardLogic = () => {
         
 
         const removeTask = async (taskId: string) => {
-          
-          try{
 
-            await remove(ref(database, `tasks/${houseId}/${taskId}`));
+          if( houseId ){
 
-            setData((prevData) => {
-              if (!prevData) return prevData;
-              const updatedData = { ...prevData };
-              delete updatedData[taskId];
-              return updatedData;
-            });
-            handleModal()
+              // await remove(ref(database, `tasks/${houseId}/${taskId}`));
+  
+              const res = await taskService.removeTaskService(houseId, taskId);
+
+              if( res ){
+
+                setData((prevData) => {
+                  if (!prevData) return prevData;
+                  const updatedData = { ...prevData };
+                  delete updatedData[taskId];
+                  return updatedData;
+                });
+  
+                handleModal()
+                
+                Toast.show({
+                  text1: 'Suppression de tâche',
+                  text2: 'Tâche supprimée avec succès ! 🎉',
+                  type: 'success',
+                  position: 'top',
+                  visibilityTime: 3000,
+                  topOffset: 50,
+                  autoHide: true,
+                });
+
+              }else{
+
+                Toast.show({
+                  text1: 'Suppression de tâche',
+                  text2: 'Oups il y à eu un problème.. Veuillez recommencer',
+                  type: 'error',
+                  position: 'top',
+                  visibilityTime: 3000,
+                  topOffset: 50,
+                  autoHide: true,
+                });
+
+              }
             
-            Toast.show({
-              text1: 'Suppression de tâche',
-              text2: 'Tâche supprimée avec succès ! 🎉',
-              type: 'success',
-              position: 'top',
-              visibilityTime: 3000,
-              topOffset: 50,
-              autoHide: true,
-            });
-            
-            
-          }catch(error){
-
-            Toast.show({
-              text1: 'Suppression de tâche',
-              text2: 'Oups il y à eu un problème.. Veuillez recommencer',
-              type: 'error',
-              position: 'top',
-              visibilityTime: 3000,
-              topOffset: 50,
-              autoHide: true,
-            });
-
-          }
+          }else{
+            console.error("no houseId")
+          }   
           
 
         }
@@ -230,17 +240,23 @@ const DashboardLogic = () => {
           if (houseId) {           
           
             getAllUsersFromHouse(houseId);
-            getTasks(houseId);
+            // getTasks(houseId);
             getUser(currentUser.uid);
             
           }
         }, [houseId]); 
 
         useFocusEffect(
-            useCallback(() => {
+            useCallback(() => {            
+
+            if( houseId ){
+              getTasks(houseId);
+              
+            }
+
               fetchData();  
 
-            }, [])
+            }, [houseId])
         );
 
         return {

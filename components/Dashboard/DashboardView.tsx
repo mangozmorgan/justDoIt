@@ -89,7 +89,7 @@ const DashBoard = () => {
                             </TouchableOpacity> */}
                             {modalDatas &&
                             <View >
-                                <TouchableOpacity style={[styles.buttonBase, styles.buttonValidation]} onPress={() =>validateTask(modalDatas?.id)}>
+                                <TouchableOpacity style={[styles.buttonBase, styles.buttonValidation]} onPress={() =>validateTask(modalDatas?modalDatas:null)}>
                                     <Text style={styles.buttonText}>Valider la tâche</Text>
                                 </TouchableOpacity>
                                  <TouchableOpacity style={[styles.buttonBase, styles.buttonRemove]} onPress={() =>removeTask(modalDatas?.id)}>

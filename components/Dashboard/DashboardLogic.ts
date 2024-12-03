@@ -118,8 +118,6 @@ const DashboardLogic = () => {
         const removeTask = async (taskId: string) => {
 
           if( houseId ){
-
-              // await remove(ref(database, `tasks/${houseId}/${taskId}`));
   
               const res = await taskService.removeTaskService(houseId, taskId);
 
@@ -165,15 +163,38 @@ const DashboardLogic = () => {
 
         }
         
-        const validateTask = async (taskId: string) => {
+        const validateTask = async (task: any) => {
           
-          
+          console.log(task);
           //TODO :  doit checker :
 
-          //si la tache est recurrente           
+          //si la tache est recurrente 
+          if( task.frequency ){
+
+            //et plusieurs responsables, alors on passe le nextUtilisateurId au suivant, on donne l'id du responsable actuel à lastExecutionId 
+            if( task.responsable && task.responsable.length >= 1 ){
+
+              let indexCurrentUser = 0 ; 
+              for( let i = 0 ; i < task.responsable.length ; i++){
+                if ( task.responsable[i] !== currentUser.uid){
+                  indexCurrentUser++
+                }
+              }
+
+              // pour passer au prochain responsable de la tâche
+              indexCurrentUser++
+              //TODO : pour le cas de plusieur responsables on recupère les prénoms pk ?
+              task.nextExecutionUserId = task.responsable[indexCurrentUser]
+              task.lastExecutionUserId = currentUser.uid
+              
+              console.log(task);
+
+            }
+
+          }          
 
           //si OUI :
-            //et plusieurs responsables, alors on passe le nextUtilisateurId au suivant, on donne l'id du responsable actuel à lastExecutionId 
+            
           
             //on gère la prochaine date d'execution en fonction de la récurrence et on met a jour la tache dans dashboard (data)
           

@@ -147,7 +147,6 @@ const UseNewTaskFormLogic = () => {
   
 
   const handleFrequencyChange = (res:any) => {
-    console.log(res);
     setSelectedFrequency(res);
     setSelectedDays([]);
     setDateIsChanged(false)
@@ -317,7 +316,10 @@ const UseNewTaskFormLogic = () => {
       let userArray = selectedUser
       
       if( selectedUser[0] === 'all'){
+        console.log(userList);
         userArray = Object.keys(userList).map(user => user)  
+        console.log(userList);
+
       }
       const taskId = Date.now()
       //TODO : faire passer en TS Task
@@ -337,8 +339,6 @@ const UseNewTaskFormLogic = () => {
         executionDate : selectedDate.toISOString(),
         executionHour : selectedHour?.toISOString().slice(11, 16),
       }
-
-      console.log(task);
 
       if( user?.uid ){
 

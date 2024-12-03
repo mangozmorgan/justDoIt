@@ -8,11 +8,10 @@ import { PublicUserInterface } from '../../interfaces/PublicUserInterface';
 import Toast from 'react-native-toast-message';
 import TaskService from '../../services/TaskService';
 
-
 const taskService = TaskService();
 
 const DashboardLogic = () => {
-
+  
     const currentUser = auth.currentUser;
 
     if( currentUser ){

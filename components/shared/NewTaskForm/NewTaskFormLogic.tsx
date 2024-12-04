@@ -285,7 +285,13 @@ const UseNewTaskFormLogic = () => {
     
   }
   
-
+  const getUserIdByName = (name: string): string | undefined => {
+    return Object.keys(userList).find((key) => userList[key].name === name);
+  };
+  
+  // const getNameById = (id: string): string | undefined => {
+  //   return userList[id]?.name; // Accède directement à l'utilisateur par son ID
+  // };
 
   const onSubmit = async (data: TaskFormValues) => {
       
@@ -312,15 +318,31 @@ const UseNewTaskFormLogic = () => {
         frequency = null
       }
 
-      const user = auth.currentUser;
-      let userArray = selectedUser
       
-      if( selectedUser[0] === 'all'){
-        console.log(userList);
-        userArray = Object.keys(userList).map(user => user)  
-        console.log(userList);
+      const user = auth.currentUser;
 
+      let userArray 
+
+
+      if( selectedUser[0] === 'all'){
+        
+        userArray = Object.keys(userList).map(user => {
+          console.log(user);
+          return {
+            id: user,
+            name: userList[user]?.name
+          }
+        })  
+        // console.log(userArray);
+      }else{
+        // console.log(selectedUser);
+        userArray = [{
+          id: selectedUser[0],
+          name: userList[selectedUser[0]]?.name, 
+        }]
+        
       }
+console.log(userArray);
       const taskId = Date.now()
       //TODO : faire passer en TS Task
       const task = {
@@ -335,11 +357,11 @@ const UseNewTaskFormLogic = () => {
         lastExecutionUserId : '',
         createdBy: user?.uid,
         createdDate: Date.now(),
-        nextExecutionUserId : userArray[0],
+        nextExecutionUserId : userArray[0].id,
         executionDate : selectedDate.toISOString(),
         executionHour : selectedHour?.toISOString().slice(11, 16),
       }
-
+// console.log(task);
       if( user?.uid ){
 
         

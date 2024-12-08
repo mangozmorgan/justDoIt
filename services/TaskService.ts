@@ -1,4 +1,4 @@
-import {  get, ref,remove} from "firebase/database";
+import {  get, ref, remove, update} from "firebase/database";
 import { auth, database } from "../config/firebaseConfig";
 import { Task } from "../interfaces/TaskInterface";
 
@@ -11,6 +11,19 @@ const TaskService = () => {
 		try{
 
 			await remove(ref(database, `tasks/${houseId}/${taskId}`));
+			return true
+
+		}catch(error){
+			return error
+		}
+		
+	}
+	
+	const updateTaskService = async (houseId: string, taskId: string, upgradedData: Task) => {
+
+		try{
+			// console.log(upgradedData);
+			await update(ref(database, `tasks/${houseId}/${taskId}`), upgradedData);
 			return true
 
 		}catch(error){
@@ -47,7 +60,8 @@ const TaskService = () => {
 
 	return {
 		getTasksService,
-		removeTaskService
+		removeTaskService,
+		updateTaskService
 	}
 
 }

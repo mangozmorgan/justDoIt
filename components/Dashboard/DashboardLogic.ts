@@ -2,7 +2,7 @@ import { User } from '../../interfaces/UserInterface'
 import { useCallback, useEffect, useState } from "react";
 import { auth, database } from "../../config/firebaseConfig";
 import { Task } from "../../interfaces/TaskInterface";
-import {  get, ref,remove} from "firebase/database";
+import {  get, ref } from "firebase/database";
 import { useFocusEffect } from '@react-navigation/native';
 import { PublicUserInterface } from '../../interfaces/PublicUserInterface';
 import Toast from 'react-native-toast-message';
@@ -11,6 +11,16 @@ import TaskService from '../../services/TaskService';
 const taskService = TaskService();
 
 const DashboardLogic = () => {
+
+  const dayList = [
+    "monday",
+    "tuesday",
+    "wednesday",
+     "thursday",
+    "friday",
+     "saturday",
+    "sunday"
+  ];
   
     const currentUser = auth.currentUser;
 
@@ -50,18 +60,13 @@ const DashboardLogic = () => {
         const getTaskDetails = (task: Task) => {
 
           if( allHouseUsers ){
-
-            task.responsable = task.responsable.map(responsableId => {
-              
-                const username = allHouseUsers[responsableId]?.name; 
-                return username; 
-            });
-  
+            
             task.createdBy = allHouseUsers[task.createdBy]?.name
+
           }else{
             console.error("allHouseUsers n'est pas défini")
           }
-          
+
           setModalDatas(task)
           handleModal()
 
@@ -83,17 +88,19 @@ const DashboardLogic = () => {
         const getTasks = async (userUID: string) => {
           
             try {
-              console.log('on recup les tasks')
               const snapshot = await get(ref(database, `tasks/${userUID}`));
               if (snapshot.exists()) {
                 
                 const tasksSnapshot = snapshot.val() as Record<string, Task>;
+                Object.values(tasksSnapshot).forEach((entry: Task) => {
+                  console.log(entry.responsable);
+              });
                 const finalTasks = Object.fromEntries(
                   Object.entries(tasksSnapshot).filter(([_, task]) => task.nextExecutionUserId === currentUser.uid)
                 );
-                
+                // console.log(finalTasks);
                 setData(finalTasks);
-        
+        // console.log(data)
               } else {
                 setData(null);
               }
@@ -113,7 +120,14 @@ const DashboardLogic = () => {
           }
         }
 
-        
+        const removeTaskFromDashboard = (taskId: string) => {
+          setData((prevData) => {
+            if (!prevData) return prevData;
+            const updatedData = { ...prevData };
+            delete updatedData[taskId];
+            return updatedData;
+          });
+        }
 
         const removeTask = async (taskId: string) => {
 
@@ -123,12 +137,7 @@ const DashboardLogic = () => {
 
               if( res ){
 
-                setData((prevData) => {
-                  if (!prevData) return prevData;
-                  const updatedData = { ...prevData };
-                  delete updatedData[taskId];
-                  return updatedData;
-                });
+                removeTaskFromDashboard(taskId)
   
                 handleModal()
                 
@@ -163,45 +172,99 @@ const DashboardLogic = () => {
 
         }
         
-        const validateTask = async (task: any) => {
+        const validateTask = async (task: Task) => {
           
-          console.log(task);
-          //TODO :  doit checker :
-
-          //si la tache est recurrente 
-          if( task.frequency ){
-
-            //et plusieurs responsables, alors on passe le nextUtilisateurId au suivant, on donne l'id du responsable actuel à lastExecutionId 
-            if( task.responsable && task.responsable.length >= 1 ){
-
-              let indexCurrentUser = 0 ; 
-              for( let i = 0 ; i < task.responsable.length ; i++){
-                if ( task.responsable[i] !== currentUser.uid){
-                  indexCurrentUser++
-                }
-              }
-
-              // pour passer au prochain responsable de la tâche
-              indexCurrentUser++
-              //TODO : pour le cas de plusieur responsables on recupère les prénoms pk ?
-              task.nextExecutionUserId = task.responsable[indexCurrentUser]
-              task.lastExecutionUserId = currentUser.uid
+          
+          if( houseId ){
+            if( task.frequency ){
               
-              console.log(task);
+              //et plusieurs responsables, alors on passe le nextUtilisateurId au suivant, on donne l'id du responsable actuel à lastExecutionId 
+              if( task.responsable && task.responsable.length >= 1 ){
+  
+                let indexCurrentUser = 0 ;
+  
+                for( let i = 0 ; i < task.responsable.length ; i++){
+  
+                  if ( task.responsable[i] !== currentUser.uid){
+                    indexCurrentUser++
+                  }
+  
+                }
+  
+                indexCurrentUser--
 
-            }
+                if( task.responsable[indexCurrentUser] ){
+                  task.nextExecutionUserId = task.responsable[indexCurrentUser].id
+                }else{
+                  task.nextExecutionUserId = task.responsable[0].id
+                }
+  
+                // pour passer au prochain responsable de la tâche
+                task.lastExecutionUserId = currentUser.uid
+                removeTaskFromDashboard(task.id)
+                console.log(task);
+  
+              }
+  
+              handleModal()
+                  
+              Toast.show({
+                text1: 'Validation de tâche',
+                text2: 'Tâche validée avec succès ! 🎉',
+                type: 'success',
+                position: 'top',
+                visibilityTime: 3000,
+                topOffset: 50,
+                autoHide: true,
+              });
+  
 
-          }          
+              //si c'est une recurrence par jours
+              if( dayList.includes(task.frequency[0]) ){
+                const currentDay = new Date(task.executionDate).toLocaleString('en-US', { weekday: 'long' });
+                const currentIndex = dayList.indexOf(currentDay);
+                let closestDay = null;
+                let closestDistance = Infinity;
 
-          //si OUI :
+                task.frequency.forEach(day => {
+                    const dayIndex = dayList.indexOf(day);
+                    const distance = (dayIndex - currentIndex + 7) % 7;
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestDay = day;
+                    }
+                });
+
+                // Calculer la date du prochain jour correspondant
+                if( closestDay ){
+                  const nextDate = new Date();
+                  nextDate.setDate(nextDate.getDate() + closestDistance);
+                  task.executionDate = nextDate.toISOString();
+                }
+                
+
+              }else{
+                //TODO : reste a voir que la tache sois directe decallé dans le dashboard
+                // repousser la date du chiffre donné
+                let date = new Date(task.executionDate);
+                date.setDate( date.getDate() + Number(task.frequency[0]) );
+                task.executionDate = date.toISOString();
+              }
+              //TODO : Modifier aussi la lastExecutionDate
+              taskService.updateTaskService(houseId, task.id, task)
+  
+  
+            }else{
+
+              taskService.removeTaskService(houseId, task.id)
+  
+            }  
+          }
+                  
+
+          
             
           
-            //on gère la prochaine date d'execution en fonction de la récurrence et on met a jour la tache dans dashboard (data)
-          
-          //si NON :
-            // on peut la supprimer de la DB définitivement 
-
-          // Toast pour valider l'action de user
 
         }
 

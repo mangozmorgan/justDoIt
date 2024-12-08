@@ -4,10 +4,10 @@ export interface Task {
     id: string,
     name: string;
     status: string;
-    responsable : string[],
+    responsable : any[],
     houseId: string,
     type : string,
-    frequency : string,
+    frequency : string[],
     description : string,
     lastExecutionUserId : string,
     createdBy: string,

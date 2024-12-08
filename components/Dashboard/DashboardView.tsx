@@ -63,10 +63,18 @@ const DashBoard = () => {
                         </Text>
                         <View style={{flexDirection:'row'}}>
                             <Text style={styles.littleBold}>Responsable : </Text>
-                            <Text>{modalDatas?.responsable.join(', ')}</Text>
+                            <Text>
+                                
+                                {Array.isArray(modalDatas?.responsable) && modalDatas.responsable.length > 0 
+                                    ? modalDatas.responsable
+                                        .filter(responsable => responsable && responsable.name) // Filtrer les responsables non définis
+                                        .map(responsable => responsable.name)
+                                        .join(', ') 
+                                    : 'Aucun responsable'}
+                            </Text>
                         </View>
                         <View style={{flexDirection:'row'}} >
-                            <Text style={styles.littleBold}>Dernière exécution : </Text>
+                            <Text style={styles.littleBold}>Resposable dernière exécution : </Text>
                             <Text>{modalDatas?.lastExecutionUserId}</Text>
                         </View>
                         <View style={{flexDirection:'row'}}>

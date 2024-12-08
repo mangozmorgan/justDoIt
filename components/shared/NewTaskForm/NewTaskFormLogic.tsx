@@ -359,6 +359,7 @@ console.log(userArray);
         createdDate: Date.now(),
         nextExecutionUserId : userArray[0].id,
         executionDate : selectedDate.toISOString(),
+        lastExecutionDate : "",
         executionHour : selectedHour?.toISOString().slice(11, 16),
       }
 // console.log(task);

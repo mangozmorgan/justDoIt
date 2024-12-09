@@ -10,6 +10,7 @@ export interface Task {
     frequency : string[],
     description : string,
     lastExecutionUserId : string,
+    lastExecutionDate : string,
     createdBy: string,
     nextExecutionUserId : string,
     executionDate : string

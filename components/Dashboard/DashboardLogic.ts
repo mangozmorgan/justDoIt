@@ -250,7 +250,10 @@ const DashboardLogic = () => {
                 date.setDate( date.getDate() + Number(task.frequency[0]) );
                 task.executionDate = date.toISOString();
               }
-              //TODO : Modifier aussi la lastExecutionDate
+              
+              const timestamp = Date.now();
+              const date = new Date(timestamp);
+              task.lastExecutionDate = date.toISOString(); 
               taskService.updateTaskService(houseId, task.id, task)
   
   

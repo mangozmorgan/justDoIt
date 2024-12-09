@@ -362,7 +362,7 @@ console.log(userArray);
         lastExecutionDate : "",
         executionHour : selectedHour?.toISOString().slice(11, 16),
       }
-// console.log(task);
+      
       if( user?.uid ){
 
         

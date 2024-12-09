@@ -67,16 +67,20 @@ const DashBoard = () => {
                                 
                                 {Array.isArray(modalDatas?.responsable) && modalDatas.responsable.length > 0 
                                     ? modalDatas.responsable
-                                        .filter(responsable => responsable && responsable.name) // Filtrer les responsables non définis
+                                        .filter(responsable => responsable && responsable.name)
                                         .map(responsable => responsable.name)
                                         .join(', ') 
                                     : 'Aucun responsable'}
                             </Text>
                         </View>
-                        <View style={{flexDirection:'row'}} >
-                            <Text style={styles.littleBold}>Resposable dernière exécution : </Text>
-                            <Text>{modalDatas?.lastExecutionUserId}</Text>
-                        </View>
+
+                        {modalDatas?.lastExecutionUserId ? (
+                            <View style={{flexDirection:'row'}} >
+                                <Text style={styles.littleBold}>Responsable dernière exécution : </Text>
+                                <Text>{modalDatas?.lastExecutionUserId}</Text>
+                            </View>
+                        ) : null}
+                        
                         <View style={{flexDirection:'row'}}>
                             <Text style={styles.littleBold}>Créé par : </Text>   
                             <Text>{modalDatas?.createdBy}</Text>       
@@ -86,11 +90,21 @@ const DashBoard = () => {
                             <Text>{moment(modalDatas?.executionDate).format('DD MMM YYYY')}</Text>
                               
                         </View>
-                        <View style={{flexDirection:'row'}}>
-                            <Text style={styles.littleBold}>Commentaires : </Text>
-                            <Text>{modalDatas?.description}</Text>
-                              
-                        </View>
+
+                        {modalDatas?.lastExecutionDate ? (
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.littleBold}>Date dernière exécution : </Text>
+                                <Text>{moment(modalDatas?.lastExecutionDate).format('DD MMM YYYY')}</Text>
+                            </View>
+                        ) : null}
+
+                        {modalDatas?.description ? (
+                            <View style={{flexDirection:'row'}}>
+                                <Text style={styles.littleBold}>Commentaires : </Text>
+                                <Text>{modalDatas?.description}</Text>
+                                
+                            </View>
+                        ) : null}
                         <View style={{alignItems:'center', marginTop:20}}>
                             {/* <TouchableOpacity style={[styles.buttonBase, styles.buttonGrey]} onPress={() =>handleModal()}>
                                 <Text style={styles.buttonText}>Fermer</Text>
